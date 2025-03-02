@@ -13,9 +13,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/reducer";
+import { useNavigate } from "react-router";
 const Login = () => {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const { control, handleSubmit, setError } = useForm({
     defaultValues: { stayConnected: false },
   });
@@ -34,6 +35,7 @@ const Login = () => {
             stayConnected: data.stayConnected,
           })
         );
+        navigate("/");
       })
       .catch((error) => {
         if (error.status == 404) {
@@ -65,13 +67,14 @@ const Login = () => {
           padding: "15px",
         }}
       >
-        <Typography
-          textAlign={"center"}
-          style={{ fontWeight: "900", fontSize: "40px", color: "#2eb8b8" }}
-        >
-          Login
-        </Typography>
-        <img src={agilLogo} height={"125px"} width={"125px"} />
+        <Stack bgcolor={"#ffd001"} py="15px" borderRadius={"15px"}>
+          <img
+            src={agilLogo}
+            height={"125px"}
+            width={"125px"}
+            style={{ alignSelf: "center" }}
+          />
+        </Stack>
         <form onSubmit={handleSubmit(actionLogin)}>
           <Stack spacing={2} mt={"15px"}>
             <Typography>Hello! let's get started</Typography>
@@ -85,6 +88,7 @@ const Login = () => {
               }) => (
                 <TextField
                   required
+                  size="small"
                   value={value}
                   onChange={onChange}
                   id="outlined-basic"
@@ -96,7 +100,6 @@ const Login = () => {
                 />
               )}
             />
-
             <Controller
               control={control}
               name="password"
@@ -106,6 +109,7 @@ const Login = () => {
               }) => (
                 <TextField
                   required
+                  size="small"
                   value={value}
                   onChange={onChange}
                   id="outlined-basic"
@@ -117,7 +121,6 @@ const Login = () => {
                 />
               )}
             />
-
             <Button
               type="submit"
               style={{ background: "#fed000" }}
@@ -125,7 +128,6 @@ const Login = () => {
             >
               Sign In
             </Button>
-
             <Stack direction={"row"} justifyContent={"space-between"}>
               <Controller
                 control={control}
@@ -139,6 +141,9 @@ const Login = () => {
               />
               <Typography>Forget Password ?</Typography>
             </Stack>
+            <a href="/register">
+              <Typography>I have already an account</Typography>
+            </a>
           </Stack>
         </form>
       </Stack>
