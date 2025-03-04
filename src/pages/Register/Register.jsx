@@ -132,6 +132,10 @@ const Register = () => {
             />
             <Controller
               control={control}
+              rules={{
+                maxLength: { value: 8, message: "CIN must be 8 numbers" },
+                minLength: { value: 8, message: "CIN must be 8 numbers" },
+              }}
               name="cin"
               render={({
                 field: { value, onChange },
@@ -154,6 +158,16 @@ const Register = () => {
             <Controller
               control={control}
               name="phone"
+              rules={{
+                maxLength: {
+                  value: 8,
+                  message: "Phone number must be 8 numbers",
+                },
+                minLength: {
+                  value: 8,
+                  message: "Phone number must be 8 numbers",
+                },
+              }}
               render={({
                 field: { value, onChange },
                 fieldState: { error },
@@ -222,9 +236,10 @@ const Register = () => {
                 field: { value, onChange },
                 fieldState: { error },
               }) => (
-                <FormControl>
+                <FormControl required>
                   <FormLabel>Role</FormLabel>
                   <RadioGroup
+                    required
                     onChange={onChange}
                     value={value}
                     defaultValue="female"

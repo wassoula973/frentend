@@ -4,6 +4,10 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import NotFound from "./pages/NotFound/NotFound";
 import Unauthorized from "./pages/Unauthorized/Unauthorized";
+import HomeAssistant from "./pages/Assistant/HomeAssistant/HomeAssistant";
+import Navbar from "./components/Navbar/Navbar";
+import HomeGerant from "./pages/Gerant/HomeGerant/HomeGerant";
+import AddRequest from "./pages/Gerant/AddRequest/AddRequest";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -15,31 +19,36 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      ) : user.role == "admin" ? (
-        <Routes>
-          <Route path="/" element={<p>Acceuil admin</p>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      ) : user.role == "gerant" ? (
-        <Routes>
-          <Route path="/" element={<p>Acceuil gérant</p>} />
-          <Route path="/a" element={<p>a gérant</p>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      ) : user.role == "technicien" ? (
-        <Routes>
-          <Route path="/" element={<p>Aceuil technicien</p>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      ) : user.role == "assistant" ? (
-        <Routes>
-          <Route path="/" element={<p>Aceuil assistant</p>} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
       ) : (
-        <Routes>
-          <Route path="*" element={<Unauthorized />} />
-        </Routes>
+        <>
+          <Navbar />
+          {user.role == "admin" ? (
+            <Routes>
+              <Route path="/" element={<p>Acceuil admin</p>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          ) : user.role == "gerant" ? (
+            <Routes>
+              <Route path="/" element={<HomeGerant />} />
+              <Route path="/add_request" element={<AddRequest />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          ) : user.role == "technicien" ? (
+            <Routes>
+              <Route path="/" element={<p>Aceuil technicien</p>} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          ) : user.role == "assistant" ? (
+            <Routes>
+              <Route path="/" element={<HomeAssistant />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          ) : (
+            <Routes>
+              <Route path="*" element={<Unauthorized />} />
+            </Routes>
+          )}
+        </>
       )}
     </>
   );

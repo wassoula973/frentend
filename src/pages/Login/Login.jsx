@@ -142,7 +142,7 @@ const Login = () => {
               <Typography>Forget Password ?</Typography>
             </Stack>
             <a href="/register">
-              <Typography>I have already an account</Typography>
+              <Typography>I don't have an account</Typography>
             </a>
           </Stack>
         </form>
