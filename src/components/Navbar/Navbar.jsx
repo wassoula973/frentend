@@ -7,11 +7,13 @@ import technicien from "../../assets/technicien.png";
 import gerant from "../../assets/gerant.png";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/reducer";
+import { useNavigate } from "react-router";
 
 const Navbar = () => {
   const { user } = useSelector((state) => state);
   const [anchorEl, setAnchorEl] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -80,6 +82,7 @@ const Navbar = () => {
           onClick={() => {
             handleClose();
             dispatch(logout());
+            navigate("/");
           }}
         >
           Logout

@@ -8,6 +8,7 @@ import HomeAssistant from "./pages/Assistant/HomeAssistant/HomeAssistant";
 import Navbar from "./components/Navbar/Navbar";
 import HomeGerant from "./pages/Gerant/HomeGerant/HomeGerant";
 import AddRequest from "./pages/Gerant/AddRequest/AddRequest";
+import ListRequests from "./pages/Gerant/ListRequests/ListRequests";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -31,6 +32,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomeGerant />} />
               <Route path="/add_request" element={<AddRequest />} />
+              <Route path="/requests" element={<ListRequests />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "technicien" ? (
