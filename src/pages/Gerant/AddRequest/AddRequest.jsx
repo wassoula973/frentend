@@ -42,6 +42,8 @@ const AddRequest = () => {
     formdata.append("gerant", user._id);
     formdata.append("station", user.station._id);
     formdata.append("error", data.error);
+    formdata.append("category", data.category);
+
     formdata.append("intensity", data.intensity);
     formdata.append("image", image);
 
@@ -86,6 +88,37 @@ const AddRequest = () => {
       {user.station ? (
         <form onSubmit={handleSubmit(addRequestAction)}>
           <Stack spacing={2} mt={"15px"} width={"30vw"}>
+            <Controller
+              control={control}
+              name="category"
+              render={({ field: { value, onChange } }) => (
+                <FormControl fullWidth>
+                  <InputLabel id="demo-simple-select-label">
+                    Category
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={value}
+                    label="Age"
+                    onChange={onChange}
+                  >
+                    <MenuItem value={"dga"}>D G A</MenuItem>
+                    <MenuItem value={"comptabilité"}>Compta</MenuItem>
+                    <MenuItem value={"commerciale gaz"}>Gaz</MenuItem>
+                    <MenuItem value={"exploitation"}>Exploitation</MenuItem>
+                    <MenuItem value={"financiere"}>Financiere</MenuItem>
+                    <MenuItem value={"maitenance"}>Maitenance</MenuItem>
+                    <MenuItem value={"marketing"}>Marketing</MenuItem>
+                    <MenuItem value={"securite"}>Securite</MenuItem>
+                    <MenuItem value={"commerciale des reseaux"}>
+                      Reseau
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+              )}
+            />
+
             <Controller
               control={control}
               name="intensity"

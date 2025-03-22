@@ -15,3 +15,13 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+.row_deleted {
+  text-decoration: line-through;
+  color: #f00;
+  font-weight: 700;
+}
+
+.btn-not-dashed {
+  text-decoration: none;
+}

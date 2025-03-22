@@ -1,0 +1,356 @@
+import {
+  Box,
+  Button,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Modal,
+  OutlinedInput,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { useNavigate } from "react-router";
+import SearchIcon from "@mui/icons-material/Search";
+import Swal from "sweetalert2";
+
+const ListUsers = () => {
+  const { token } = useSelector((state) => state);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [search, setSearch] = useState("");
+  const navigate = useNavigate();
+  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [role, setRole] = useState("");
+
+  const [open, setOpen] = useState(false);
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setRole(value);
+  };
+
+  const columns = [
+    { field: "id", headerName: "ID", sortable: false },
+    {
+      field: "firstname",
+      headerName: "First Name",
+      flex: 1,
+      rendenCell: (cell) => {
+        return <p style={{ fontSize: "36px" }}>{cell.row.firstane}</p>;
+      },
+    },
+    { field: "lastname", headerName: "Last Name", flex: 1 },
+    { field: "role", headerName: "Role", flex: 1 },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (cell) => {
+        return (
+          <Stack
+            direction={"row"}
+            spacing={2}
+            alignItems={"center"}
+            height={"100%"}
+          >
+            <Button
+              variant="contained"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate("/user/" + cell.row._id);
+              }}
+            >
+              <RemoveRedEyeIcon />
+            </Button>
+            {cell.row.deleted ? (
+              <Button
+                className="btn-not-dashed"
+                color="success"
+                variant="contained"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  restoreUser(cell.row._id);
+                }}
+              >
+                Restore
+              </Button>
+            ) : (
+              <>
+                <Button
+                  color="warning"
+                  variant="contained"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpen(true);
+                    setSelectedUser(cell.row);
+                  }}
+                >
+                  Change Role
+                </Button>
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    await setSelectedUser(cell.row);
+                    Swal.fire({
+                      title: "Are you sure?",
+                      text: "You won't be able to revert this!",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, delete it!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        deleteUser();
+                      }
+                    });
+                  }}
+                >
+                  Delete
+                </Button>
+              </>
+            )}
+          </Stack>
+        );
+      },
+    },
+  ];
+
+  const getAllUsers = () => {
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "admin/users", {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => setUsers(response.data))
+      .catch((error) => console.log(error));
+  };
+
+  useEffect(() => {
+    getAllUsers();
+  }, []);
+
+  const deleteUser = () => {
+    axios
+      .delete(
+        import.meta.env.VITE_BACKEND_URL + "users/" + selectedUser._id,
+
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllUsers();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      });
+  };
+
+  const restoreUser = (id) => {
+    axios
+      .patch(
+        import.meta.env.VITE_BACKEND_URL + "admin/user/" + id,
+        {},
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllUsers();
+      });
+  };
+
+  const changeRole = () => {
+    axios
+      .put(
+        import.meta.env.VITE_BACKEND_URL + "users",
+        { id: selectedUser._id, role },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllUsers();
+        setOpen(false);
+        setRole("");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const deleteMultiple = () => {
+    axios
+      .delete(import.meta.env.VITE_BACKEND_URL + "admin/users/multiple", {
+        headers: { Authorization: "Bearer " + token },
+        data: { listId: selectedUsers },
+      })
+      .then((response) => {
+        console.log(response.data);
+        getAllUsers();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const restoreMultiple = () => {
+    axios
+      .patch(
+        import.meta.env.VITE_BACKEND_URL + "admin/users/multiple",
+        { listId: selectedUsers },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllUsers();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  const paginationModel = { page: 0, pageSize: 10 };
+
+  return (
+    <div>
+      <Paper sx={{ height: "auto", width: "100%" }}>
+        <Box sx={{ display: "flex", alignItems: "flex-end", margin: "25px" }}>
+          <SearchIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
+          <TextField
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            id="input-with-sx"
+            label="With sx"
+            variant="outlined"
+          />
+        </Box>
+        {selectedUsers.length > 0 && (
+          <Button
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  deleteMultiple();
+                }
+              });
+            }}
+            style={{ margin: "25px" }}
+            color="error"
+            variant="contained"
+          >
+            Delete Checked Rows
+          </Button>
+        )}
+
+        {selectedUsers.length > 0 && (
+          <Button
+            onClick={() => {
+              restoreMultiple();
+            }}
+            color="success"
+            variant="contained"
+          >
+            Restore Checked Rows
+          </Button>
+        )}
+        <DataGrid
+          onRowSelectionModelChange={(rows) => {
+            console.log(rows);
+
+            setSelectedUsers(rows);
+          }}
+          rows={users
+            .filter((u) => {
+              return (
+                u.firstname.toLowerCase().includes(search.toLowerCase()) ||
+                u.lastname.toLowerCase().includes(search.toLowerCase()) ||
+                u._id.toLowerCase().includes(search.toLowerCase()) ||
+                u.role.toLowerCase().includes(search.toLowerCase())
+              );
+            })
+            .map((user) => {
+              return { ...user, id: user._id };
+            })}
+          getCellClassName={(cell) =>
+            `${
+              cell.field != "actions" && cell.row.deleted ? "row_deleted" : ""
+            }`
+          }
+          columns={columns}
+          initialState={{ pagination: { paginationModel } }}
+          pageSizeOptions={[5, 10, 25]}
+          checkboxSelection
+          sx={{ border: 0, height: "auto" }}
+        />
+      </Paper>
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Stack
+          style={{
+            height: "300px",
+            width: "350px",
+            background: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={2}
+        >
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="demo-multiple-name-label">Role</InputLabel>
+            <Select
+              labelId="demo-multiple-name-label"
+              id="demo-multiple-name"
+              value={role}
+              onChange={handleChange}
+              input={<OutlinedInput label="Role" />}
+            >
+              <MenuItem value={"technicien"}>Technicien</MenuItem>
+              <MenuItem value={"gerant"}>Gerant</MenuItem>
+              <MenuItem value={"assistant"}>Assistant</MenuItem>
+              <MenuItem value={"admin"}>Admin</MenuItem>
+            </Select>
+          </FormControl>
+          <Button
+            onClick={() => {
+              changeRole();
+            }}
+          >
+            Confirm
+          </Button>
+        </Stack>
+      </Modal>
+    </div>
+  );
+};
+
+export default ListUsers;

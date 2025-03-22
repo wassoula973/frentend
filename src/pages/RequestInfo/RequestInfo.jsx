@@ -29,6 +29,11 @@ const RequestInfo = () => {
     <div>
       RequestInfo
       <p>{info ? info.gerant.firstname : ""}</p>
+      <p> {info ? info.gerant.lastname : ""}</p>
+      <p> {info ? info.gerant.cin : ""}</p>
+      <p> {info ? info.gerant.email : ""}</p>
+      <p> {info ? info.gerant.password : ""}</p>
+      <p> {info ? info.gerant.phone : ""}</p>
     </div>
   );
 };

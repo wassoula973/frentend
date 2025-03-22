@@ -3,24 +3,92 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
+import dayjs from "dayjs";
 
 const ListRequests = () => {
   const navigate = useNavigate();
   const { user, token } = useSelector((state) => state);
+  const [open, setOpen] = useState(false);
+  const [techniciens, setTechniciens] = useState([]);
+  const [category, setCategory] = useState(null);
+  const [inputTechnicien, setInputTechnicien] = useState(null);
+  const [selectedIntervention, setSelectedIntervention] = useState(null);
+
+  const editIntervention = () => {
+    axios
+      .put(
+        import.meta.env.VITE_BACKEND_URL +
+          "interventions/" +
+          selectedIntervention,
+        {
+          etat: "affected",
+          technicien: inputTechnicien ? inputTechnicien._id : undefined,
+          category,
+        },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        setCategory(null);
+        setOpen(false);
+        getInterventions();
+        getTechniciens();
+      });
+  };
+
+  const deleteIntervention = () => {
+    axios
+      .delete(
+        import.meta.env.VITE_BACKEND_URL +
+          "interventions/" +
+          selectedIntervention,
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+        getInterventions();
+        getTechniciens();
+      });
+  };
+
   const columns = [
     { field: "id", headerName: "ID", flex: 1, sortable: false },
-    { field: "date", headerName: "Date", flex: 1 },
-    { field: "etat", headerName: "State", flex: 1 },
-    { field: "intensity", headerName: "Intensity", flex: 0.5 },
+    { field: "category", headerName: "Category", flex: 1 },
+    {
+      field: "date",
+      headerName: "Date",
+      flex: 1,
+      renderCell: (cell) => {
+        return <>{dayjs(cell.row.date).format("YYYY-MM-DD HH:mm")}</>;
+      },
+    },
+    { field: "etat", headerName: "State", flex: 0.3 },
+    { field: "intensity", headerName: "Intensity", flex: 0.3 },
     {
       field: "action",
       headerName: "Actions",
-      flex: 0.5,
+      flex: 1,
       renderCell: (cell) => {
         return (
-          <>
+          <Stack direction={"row"} spacing={2}>
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -29,23 +97,66 @@ const ListRequests = () => {
             >
               Show more
             </Button>
-            {user.role == "assistant" ? (
+            {user.role == "assistant" && cell.row.etat !== "done" ? (
               <>
-                <Button color="success">Assign Technicien</Button>
-                <Button color="danger">Delete</Button>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpen(true);
+                    setSelectedIntervention(cell.row._id);
+                  }}
+                  color="warning"
+                  variant="contained"
+                >
+                  Edit
+                </Button>
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedIntervention(cell.row._id);
+
+                    Swal.fire({
+                      title: "Are you sure?",
+                      text: "You won't be able to revert this!",
+                      icon: "error",
+                      showCancelButton: true,
+                      confirmButtonColor: "red",
+                      confirmButtonText: "Yes, delete it!",
+                      cancelButtonText: "No, cancel!",
+                      reverseButtons: true,
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        deleteIntervention();
+                      } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                      ) {
+                        Swal.fire({
+                          title: "Cancelled",
+                          text: "Your imaginary file is safe :)",
+                          icon: "error",
+                        });
+                      }
+                    });
+                  }}
+                  color="error"
+                  variant="contained"
+                >
+                  Delete
+                </Button>
               </>
             ) : (
               user.role == "technicien" && <Button>Change State</Button>
             )}
-          </>
+          </Stack>
         );
       },
     },
   ];
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: 10 };
 
   const [interventions, setInterventions] = useState([]);
-  const getInterventions = async () => {
+  const getInterventions = () => {
     if (user.role == "gerant") {
       axios
         .get(
@@ -74,8 +185,23 @@ const ListRequests = () => {
         });
     }
   };
+
+  const getTechniciens = () => {
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "users/role/technicien", {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => {
+        setTechniciens(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getInterventions();
+    getTechniciens();
   }, []);
   return (
     <div>
@@ -91,6 +217,77 @@ const ListRequests = () => {
           sx={{ border: 0, height: "auto" }}
         />
       </Paper>
+
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Stack
+          style={{
+            height: "300px",
+            width: "350px",
+            background: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={2}
+        >
+          <FormControl sx={{ width: 300 }}>
+            <InputLabel id="demo-simple-select-label">Category</InputLabel>
+            <Select
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Age"
+            >
+              <MenuItem value={"dga"}>D G A</MenuItem>
+              <MenuItem value={"comptabilité"}>Compta</MenuItem>
+              <MenuItem value={"commerciale gaz"}>Gaz</MenuItem>
+              <MenuItem value={"exploitation"}>Exploitation</MenuItem>
+              <MenuItem value={"financiere"}>Financiere</MenuItem>
+              <MenuItem value={"maitenance"}>Maitenance</MenuItem>
+              <MenuItem value={"marketing"}>Marketing</MenuItem>
+              <MenuItem value={"securite"}>Securite</MenuItem>
+              <MenuItem value={"commerciale des reseaux"}>Reseau</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Autocomplete
+            options={techniciens}
+            sx={{ width: 300 }}
+            onChange={(event, newValue) => {
+              setInputTechnicien(newValue);
+            }}
+            autoHighlight
+            getOptionLabel={(option) => option.firstname}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props;
+              return <Box {...optionProps}>{option.firstname}</Box>;
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Techniciens" />
+            )}
+          />
+          <Button
+            onClick={() => {
+              editIntervention();
+            }}
+          >
+            Save
+          </Button>
+        </Stack>
+      </Modal>
     </div>
   );
 };

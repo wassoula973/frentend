@@ -27,6 +27,16 @@ const HomeGerant = () => {
       </Button>
       <Typography>{user.station && user.station.gouvernorat}</Typography>
       <Typography>{user.station && user.station.adresse}</Typography>
+      <Button
+        onClick={() => {
+          navigate("/station");
+        }}
+        color="warning"
+        variant="contained"
+        style={{ width: "300px" }}
+      >
+        Manage Station
+      </Button>
     </Stack>
   );
 };

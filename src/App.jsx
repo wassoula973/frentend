@@ -10,6 +10,11 @@ import HomeGerant from "./pages/Gerant/HomeGerant/HomeGerant";
 import AddRequest from "./pages/Gerant/AddRequest/AddRequest";
 import ListRequests from "./pages/ListRequests/ListRequests";
 import RequestInfo from "./pages/RequestInfo/RequestInfo";
+import StationInfo from "./pages/Gerant/StationInfo/StationInfo";
+import HomeAdmin from "./pages/Admin/HomeAdmin/HomeAdmin";
+import SidebarAdmin from "./components/SidebarAdmin/SidebarAdmin";
+import ListUsers from "./pages/Admin/ListUsers/ListUsers";
+import UserInfo from "./pages/Admin/UserInfo/UserInfo";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -25,16 +30,27 @@ function App() {
         <>
           <Navbar />
           {user.role == "admin" ? (
-            <Routes>
-              <Route path="/" element={<p>Acceuil admin</p>} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <>
+              <SidebarAdmin />
+              <Routes>
+                <Route path="/" element={<HomeAdmin />} />
+                <Route path="/users" element={<ListUsers />} />
+                <Route path="/user/:id" element={<UserInfo />} />
+                <Route path="/stations" element={<p>Liste stations</p>} />
+                <Route
+                  path="/interventions"
+                  element={<p>Liste interentions</p>}
+                />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </>
           ) : user.role == "gerant" ? (
             <Routes>
               <Route path="/" element={<HomeGerant />} />
               <Route path="/add_request" element={<AddRequest />} />
               <Route path="/requests" element={<ListRequests />} />
               <Route path="/request/:id" element={<RequestInfo />} />
+              <Route path="/station" element={<StationInfo />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "technicien" ? (
@@ -46,7 +62,7 @@ function App() {
           ) : user.role == "assistant" ? (
             <Routes>
               <Route path="/" element={<HomeAssistant />} />
-              <Route path="/requests" element={<ListRequests />} />
+              <Route path="/request/:id" element={<RequestInfo />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : (
