@@ -143,20 +143,24 @@ const ListUsers = () => {
   }, []);
 
   const deleteUser = () => {
-    axios
-      .delete(
-        import.meta.env.VITE_BACKEND_URL + "users/" + selectedUser._id,
+    console.log(selectedUser);
 
-        { headers: { Authorization: "Bearer " + token } }
-      )
-      .then((response) => {
-        getAllUsers();
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
+    if (selectedUser) {
+      axios
+        .delete(
+          import.meta.env.VITE_BACKEND_URL + "users/" + selectedUser._id,
+
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then((response) => {
+          getAllUsers();
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your file has been deleted.",
+            icon: "success",
+          });
         });
-      });
+    }
   };
 
   const restoreUser = (id) => {

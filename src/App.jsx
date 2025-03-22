@@ -15,6 +15,8 @@ import HomeAdmin from "./pages/Admin/HomeAdmin/HomeAdmin";
 import SidebarAdmin from "./components/SidebarAdmin/SidebarAdmin";
 import ListUsers from "./pages/Admin/ListUsers/ListUsers";
 import UserInfo from "./pages/Admin/UserInfo/UserInfo";
+import ListStation from "./pages/Admin/ListStation/ListStation";
+import StationInfoAdmin from "./pages/Admin/StationInfoAdmin/StationInfoAdmin";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -36,7 +38,8 @@ function App() {
                 <Route path="/" element={<HomeAdmin />} />
                 <Route path="/users" element={<ListUsers />} />
                 <Route path="/user/:id" element={<UserInfo />} />
-                <Route path="/stations" element={<p>Liste stations</p>} />
+                <Route path="/stations" element={<ListStation />} />
+                <Route path="/station/:id" element={<StationInfoAdmin />} />
                 <Route
                   path="/interventions"
                   element={<p>Liste interentions</p>}

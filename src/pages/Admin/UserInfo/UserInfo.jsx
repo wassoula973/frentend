@@ -95,9 +95,13 @@ const UserInfo = () => {
           <p>first Name : {UserInfo.firstname}</p>
           <Typography color="red">Cin : {UserInfo.cin}</Typography>
           <Stack>
-            {UserInfo.gouvernorats.sort().map((g) => {
-              return <Typography>{g}</Typography>;
-            })}
+            {
+              //pour i de 1 à n faire
+              // for(i=1;i=n;i++)
+              UserInfo.gouvernorats.sort().map((g) => {
+                return <Typography>{g}</Typography>;
+              })
+            }
           </Stack>
 
           {UserInfo.role == "gerant" && (
