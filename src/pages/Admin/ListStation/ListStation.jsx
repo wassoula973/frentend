@@ -14,22 +14,32 @@ const ListStation = () => {
   const { token } = useSelector((state) => state);
   const navigate = useNavigate();
 
-  const deleteStation = () => {
-    if (selectedStation)
-      axios
-        .delete(
-          import.meta.env.VITE_BACKEND_URL + "stations/" + selectedStation._id,
-          {
-            headers: { Authorization: "Bearer " + token },
-          }
-        )
-        .then((response) => {
-          getAllStations();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    else deleteStation();
+  const deleteStation = (id) => {
+    axios
+      .delete(import.meta.env.VITE_BACKEND_URL + "stations/" + id, {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => {
+        getAllStations();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const restoreStation = (id) => {
+    axios
+      .patch(
+        import.meta.env.VITE_BACKEND_URL + "admin/station/" + id,
+        {},
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllStations();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const columns = [
@@ -68,9 +78,11 @@ const ListStation = () => {
 
             {cell.row.deleted == false ? (
               <Button
-                onClick={async (e) => {
+                variant="contained"
+                color="error"
+                onClick={(e) => {
                   e.stopPropagation();
-                  await setStationSelected(cell.row);
+
                   Swal.fire({
                     title: "Are you sure?",
                     text: "You won't be able to revert this!",
@@ -81,7 +93,7 @@ const ListStation = () => {
                     confirmButtonText: "Yes, delete it!",
                   }).then((result) => {
                     if (result.isConfirmed) {
-                      deleteStation();
+                      deleteStation(cell.row._id);
                     }
                   });
                 }}
@@ -90,8 +102,11 @@ const ListStation = () => {
               </Button>
             ) : (
               <Button
+                variant="contained"
+                color="success"
                 onClick={(e) => {
                   e.stopPropagation();
+                  restoreStation(cell.row._id);
                 }}
               >
                 Restore

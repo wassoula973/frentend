@@ -103,7 +103,7 @@ const ListUsers = () => {
                   variant="contained"
                   onClick={async (e) => {
                     e.stopPropagation();
-                    await setSelectedUser(cell.row);
+
                     Swal.fire({
                       title: "Are you sure?",
                       text: "You won't be able to revert this!",
@@ -114,7 +114,7 @@ const ListUsers = () => {
                       confirmButtonText: "Yes, delete it!",
                     }).then((result) => {
                       if (result.isConfirmed) {
-                        deleteUser();
+                        deleteUser(cell.row._id);
                       }
                     });
                   }}
@@ -142,25 +142,21 @@ const ListUsers = () => {
     getAllUsers();
   }, []);
 
-  const deleteUser = () => {
-    console.log(selectedUser);
+  const deleteUser = (id) => {
+    axios
+      .delete(
+        import.meta.env.VITE_BACKEND_URL + "users/" + id,
 
-    if (selectedUser) {
-      axios
-        .delete(
-          import.meta.env.VITE_BACKEND_URL + "users/" + selectedUser._id,
-
-          { headers: { Authorization: "Bearer " + token } }
-        )
-        .then((response) => {
-          getAllUsers();
-          Swal.fire({
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            icon: "success",
-          });
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllUsers();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
         });
-    }
+      });
   };
 
   const restoreUser = (id) => {
