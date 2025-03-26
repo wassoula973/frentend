@@ -233,7 +233,7 @@ const ListUsers = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             id="input-with-sx"
-            label="With sx"
+            label="Search ..."
             variant="outlined"
           />
         </Box>

@@ -25,3 +25,15 @@ input[type="number"] {
 .btn-not-dashed {
   text-decoration: none;
 }
+
+.btn-menu {
+  position: fixed !important;
+  top: 10%;
+  background: #fff !important;
+  z-index: 1000000;
+  opacity: 0.2;
+}
+
+.btn-menu:hover {
+  opacity: 1;
+}

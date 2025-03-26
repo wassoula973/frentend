@@ -90,15 +90,7 @@ const SidebarAdmin = () => {
   return (
     <div>
       {open == false && (
-        <Button
-          style={{
-            position: "fixed",
-            top: "50%",
-            background: "#ffffffcf",
-            zIndex: "1000000",
-          }}
-          onClick={toggleDrawer(true)}
-        >
+        <Button className="btn-menu" onClick={toggleDrawer(true)}>
           <Typography>{"Menu >>"}</Typography>
         </Button>
       )}

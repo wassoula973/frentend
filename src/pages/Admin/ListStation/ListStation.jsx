@@ -1,4 +1,16 @@
-import { Box, Button, Paper, Stack, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  OutlinedInput,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { DataGrid } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
@@ -10,9 +22,20 @@ import Swal from "sweetalert2";
 
 const ListStation = () => {
   const [stations, setStations] = useState([]);
+  const [gerants, setGerants] = useState([]);
+  const [gerant, setGerant] = useState([]);
   const [selectedStation, setStationSelected] = useState(null);
   const { token } = useSelector((state) => state);
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setGerant(value);
+  };
 
   const deleteStation = (id) => {
     axios
@@ -42,6 +65,23 @@ const ListStation = () => {
       });
   };
 
+  const editGerant = () => {
+    axios
+      .put(
+        import.meta.env.VITE_BACKEND_URL + "stations/" + selectedStation._id,
+        { gerant },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        setOpen(false);
+        setStationSelected(null);
+        getAllStations();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "adresse", headerName: "Adresse", flex: 1 },
@@ -51,7 +91,9 @@ const ListStation = () => {
       flex: 1,
       headerName: "Gerant",
       renderCell: (cell) => {
-        return cell.row.gerant.firstname + " " + cell.row.gerant.lastname;
+        return cell.row.gerant
+          ? cell.row.gerant.firstname + " " + cell.row.gerant.lastname
+          : "";
       },
     },
     {
@@ -75,6 +117,21 @@ const ListStation = () => {
             >
               <RemoveRedEyeIcon />
             </Button>
+
+            {cell.row.deleted == false && (
+              <Button
+                color="warning"
+                variant="contained"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setOpen(true);
+                  setStationSelected(cell.row);
+                  setGerant(cell.row.gerant ? cell.row.gerant._id : null);
+                }}
+              >
+                Edit Gerant
+              </Button>
+            )}
 
             {cell.row.deleted == false ? (
               <Button
@@ -131,8 +188,22 @@ const ListStation = () => {
       });
   };
 
+  const getGerants = () => {
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "admin/users/gerants", {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => {
+        setGerants(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getAllStations();
+    getGerants();
   }, []);
 
   const paginationModel = { page: 0, pageSize: 10 };
@@ -143,10 +214,12 @@ const ListStation = () => {
         <Box sx={{ display: "flex", alignItems: "flex-end", margin: "25px" }}>
           <SearchIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
           <TextField
-            value={"search"}
-            onChange={(e) => {}}
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
             id="input-with-sx"
-            label="With sx"
+            label="Search ..."
             variant="outlined"
           />
         </Box>
@@ -191,9 +264,21 @@ const ListStation = () => {
           onRowSelectionModelChange={(rows) => {
             // setSelectedUsers(rows);
           }}
-          rows={stations.map((station) => {
-            return { ...station, id: station._id };
-          })}
+          rows={stations
+            .filter((s) => {
+              return (
+                s.adresse.toLowerCase().includes(search.toLowerCase()) ||
+                s._id.toLowerCase().includes(search.toLowerCase()) ||
+                s.gouvernorat.toLowerCase().includes(search.toLowerCase()) ||
+                s.gerant.firstname
+                  .toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                s.gerant.lastname.toLowerCase().includes(search.toLowerCase())
+              );
+            })
+            .map((station) => {
+              return { ...station, id: station._id };
+            })}
           getCellClassName={(cell) =>
             `${
               cell.field != "actions" && cell.row.deleted ? "row_deleted" : ""
@@ -206,6 +291,56 @@ const ListStation = () => {
           sx={{ border: 0, height: "auto" }}
         />
       </Paper>
+
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Stack
+          style={{
+            height: "300px",
+            width: "350px",
+            background: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={2}
+        >
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="demo-multiple-name-label">Gerant</InputLabel>
+            <Select
+              labelId="demo-multiple-name-label"
+              id="demo-multiple-name"
+              value={gerant}
+              onChange={handleChange}
+              input={<OutlinedInput label="List Gerants" />}
+            >
+              {gerants.map((g) => {
+                return (
+                  <MenuItem value={g._id}>
+                    {g.firstname + " " + g.lastname}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <Button
+            onClick={() => {
+              editGerant();
+            }}
+          >
+            Confirm
+          </Button>
+        </Stack>
+      </Modal>
     </div>
   );
 };

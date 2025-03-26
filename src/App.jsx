@@ -17,6 +17,8 @@ import ListUsers from "./pages/Admin/ListUsers/ListUsers";
 import UserInfo from "./pages/Admin/UserInfo/UserInfo";
 import ListStation from "./pages/Admin/ListStation/ListStation";
 import StationInfoAdmin from "./pages/Admin/StationInfoAdmin/StationInfoAdmin";
+import ListIntervention from "./pages/Admin/ListIntervention/ListIntervention";
+import InterventionInfoAdmin from "./pages/Admin/InterventionInfoAdmin/InterventionInfoAdmin";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -40,9 +42,10 @@ function App() {
                 <Route path="/user/:id" element={<UserInfo />} />
                 <Route path="/stations" element={<ListStation />} />
                 <Route path="/station/:id" element={<StationInfoAdmin />} />
+                <Route path="/interventions" element={<ListIntervention />} />
                 <Route
-                  path="/interventions"
-                  element={<p>Liste interentions</p>}
+                  path="/intervention/:id"
+                  element={<InterventionInfoAdmin />}
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
