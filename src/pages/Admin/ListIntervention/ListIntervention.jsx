@@ -42,6 +42,7 @@ const ListIntervention = () => {
       flex: 1,
     },
     { field: "intensity", headerName: "Intensity", flex: 0.5 },
+    { field: "etat", headerName: "State", flex: 0.5 },
     {
       field: "action",
       headerName: "Actions",
