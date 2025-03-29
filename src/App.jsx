@@ -68,7 +68,10 @@ function App() {
           ) : user.role == "assistant" ? (
             <Routes>
               <Route path="/" element={<HomeAssistant />} />
-              <Route path="/request/:id" element={<RequestInfo />} />
+              <Route
+                path="/intervention/:id"
+                element={<InterventionInfoAdmin />}
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : (

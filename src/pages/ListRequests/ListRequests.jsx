@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Autocomplete,
   Box,
@@ -28,15 +29,15 @@ const ListRequests = () => {
   const [category, setCategory] = useState(null);
   const [inputTechnicien, setInputTechnicien] = useState(null);
   const [selectedIntervention, setSelectedIntervention] = useState(null);
-
+  const [search, setSearch] = useState("");
   const editIntervention = () => {
     axios
       .put(
         import.meta.env.VITE_BACKEND_URL +
           "interventions/" +
-          selectedIntervention,
+          selectedIntervention._id,
         {
-          etat: "affected",
+          etat: inputTechnicien ? "affected" : selectedIntervention.etat,
           technicien: inputTechnicien ? inputTechnicien._id : undefined,
           category,
         },
@@ -50,14 +51,11 @@ const ListRequests = () => {
       });
   };
 
-  const deleteIntervention = () => {
+  const deleteIntervention = (id) => {
     axios
-      .delete(
-        import.meta.env.VITE_BACKEND_URL +
-          "interventions/" +
-          selectedIntervention,
-        { headers: { Authorization: "Bearer " + token } }
-      )
+      .delete(import.meta.env.VITE_BACKEND_URL + "interventions/" + id, {
+        headers: { Authorization: "Bearer " + token },
+      })
       .then((response) => {
         Swal.fire({
           title: "Deleted!",
@@ -92,7 +90,7 @@ const ListRequests = () => {
             <Button
               onClick={(e) => {
                 e.stopPropagation();
-                navigate("/request/" + cell.row._id);
+                navigate("/intervention/" + cell.row._id);
               }}
             >
               Show more
@@ -103,7 +101,7 @@ const ListRequests = () => {
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpen(true);
-                    setSelectedIntervention(cell.row._id);
+                    setSelectedIntervention(cell.row);
                   }}
                   color="warning"
                   variant="contained"
@@ -113,8 +111,6 @@ const ListRequests = () => {
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedIntervention(cell.row._id);
-
                     Swal.fire({
                       title: "Are you sure?",
                       text: "You won't be able to revert this!",
@@ -126,7 +122,7 @@ const ListRequests = () => {
                       reverseButtons: true,
                     }).then((result) => {
                       if (result.isConfirmed) {
-                        deleteIntervention();
+                        deleteIntervention(cell.row._id);
                       } else if (
                         /* Read more about handling dismissals below */
                         result.dismiss === Swal.DismissReason.cancel
@@ -206,10 +202,30 @@ const ListRequests = () => {
   return (
     <div>
       <Paper sx={{ height: "auto", width: "100%" }}>
+        <Box sx={{ display: "flex", alignItems: "flex-end", margin: "25px" }}>
+          <SearchIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
+          <TextField
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            id="input-with-sx"
+            label="Search ..."
+            variant="outlined"
+          />
+        </Box>
         <DataGrid
-          rows={interventions.map((inter) => {
-            return { ...inter, id: inter._id };
-          })}
+          rows={interventions
+            .filter(
+              (i) =>
+                i.date.toLowerCase().includes(search.toLowerCase()) ||
+                (i.category &&
+                  i.category.toLowerCase().includes(search.toLowerCase())) ||
+                i.etat.toLowerCase().includes(search.toLowerCase()) ||
+                i._id.toLowerCase().includes(search.toLowerCase()) ||
+                i.intensity.toLowerCase().includes(search.toLowerCase())
+            )
+            .map((inter) => {
+              return { ...inter, id: inter._id };
+            })}
           columns={columns}
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10, 25]}

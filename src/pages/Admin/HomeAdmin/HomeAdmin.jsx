@@ -3,6 +3,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { Stack, Typography } from "@mui/material";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -18,43 +19,127 @@ const HomeAdmin = () => {
       .catch((error) => console.log(error));
   };
 
+  const [interventions, setInterventions] = useState([]);
+  const getAllInterventions = () => {
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "admin/interventions", {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => setInterventions(response.data))
+      .catch((error) => console.log(error));
+  };
+
   useEffect(() => {
     getAllUsers();
+    getAllInterventions();
   }, []);
   return (
-    <div>
-      <p style={{ height: "100px", width: "auto" }}>
+    <Stack
+      direction={"row"}
+      height={"80vh"}
+      width={"100%"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      spacing={15}
+    >
+      <Stack
+        justifyContent={"center"}
+        alignItems={"center"}
+        style={{
+          height: "450px",
+          width: "25%",
+          position: "relative",
+          background: "rgba(112,112,112,0.1)",
+          borderRadius: "15px",
+        }}
+      >
         <Pie
-          height={"100px"}
-          width={"auto"}
+          style={{ maxHeight: 350, maxWidth: "auto" }}
           data={{
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+            labels: ["Admin", "Assistant", "Gerant", "Technicien", "Deleted"],
             datasets: [
               {
-                label: "# of Votes",
-                data: [12, 19, 3, 5],
+                label: "# of users",
+                data: [
+                  users.filter((u) => u.role == "admin").length,
+                  users.filter((u) => u.role == "assistant").length,
+                  users.filter((u) => u.role == "gerant").length,
+                  users.filter((u) => u.role == "technicien").length,
+                  users.filter((u) => u.deleted).length,
+                ],
                 backgroundColor: [
                   "rgba(255, 99, 132, 0.2)",
                   "rgba(54, 162, 235, 0.2)",
                   "rgba(255, 206, 86, 0.2)",
                   "rgba(75, 192, 192, 0.2)",
+                  "rgba(255, 0, 0, 0.2)",
                 ],
                 borderColor: [
-                  "rgb(0, 0, 0)",
+                  "rgba(255, 99, 132, 1)",
                   "rgba(54, 162, 235, 1)",
                   "rgba(255, 206, 86, 1)",
                   "rgba(75, 192, 192, 1)",
+                  "rgb(255, 0, 0)",
                 ],
                 borderWidth: 1,
               },
             ],
           }}
-          style={{ height: "100px", width: "auto" }}
         />
-      </p>
-      <p>Graphique Station</p>
-      <p>Graphique Intervention</p>
-    </div>
+        <Typography textAlign={"center"}>
+          Total number of users : {users.length}
+        </Typography>
+      </Stack>
+
+      <Stack
+        justifyContent={"center"}
+        alignItems={"center"}
+        style={{
+          height: "450px",
+          width: "25%",
+          position: "relative",
+          background: "rgba(112,112,112,0.1)",
+          borderRadius: "15px",
+        }}
+      >
+        <Pie
+          style={{ maxHeight: 350, maxWidth: "auto" }}
+          data={{
+            labels: ["Pending", "Done", "Affected", "Canceled", "Deleted"],
+            datasets: [
+              {
+                label: "# of users",
+                data: [
+                  interventions.filter((i) => i.etat == "pending").length,
+                  interventions.filter((i) => i.etat == "done").length,
+                  interventions.filter((i) => i.etat == "affected").length,
+                  interventions.filter((i) => i.etat == "canceled").length,
+                  interventions.filter((i) => i.deleted).length,
+                ],
+                backgroundColor: [
+                  "rgba(85, 0, 255, 0.2)",
+                  "rgba(0, 255, 60, 0.2)",
+                  "rgba(255, 206, 86, 0.2)",
+                  "rgba(75, 192, 192, 0.2)",
+                  "rgba(255,0,0, 0.2)",
+                ],
+                borderColor: [
+                  "rgb(85, 0, 255)",
+                  "rgb(0, 255, 60)",
+                  "rgba(255, 206, 86, 1)",
+                  "rgba(75, 192, 192, 1)",
+                  "rgb(255, 0, 0)",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          }}
+        />
+        <Typography textAlign={"center"}>
+          Total number of interventions : {interventions.length}
+        </Typography>
+      </Stack>
+    </Stack>
   );
 };
 

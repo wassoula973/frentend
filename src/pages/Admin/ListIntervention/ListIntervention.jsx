@@ -7,6 +7,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const ListIntervention = () => {
   const [search, setSearch] = useState("");
@@ -14,6 +15,35 @@ const ListIntervention = () => {
   const [interventions, setInterventions] = useState([]);
   const { token } = useSelector((state) => state);
   const navigate = useNavigate();
+
+  const deleteIntervention = (id) => {
+    axios
+      .delete(import.meta.env.VITE_BACKEND_URL + "interventions/" + id, {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => {
+        getAll();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const restore = (id) => {
+    axios
+      .patch(
+        import.meta.env.VITE_BACKEND_URL + "admin/intervention/" + id,
+        {},
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAll();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     {
@@ -44,8 +74,9 @@ const ListIntervention = () => {
     { field: "intensity", headerName: "Intensity", flex: 0.5 },
     { field: "etat", headerName: "State", flex: 0.5 },
     {
-      field: "action",
+      field: "actions",
       headerName: "Actions",
+      flex: 0.6,
       renderCell: (cell) => {
         return (
           <Stack direction={"row"} spacing={2}>
@@ -58,6 +89,41 @@ const ListIntervention = () => {
             >
               <RemoveRedEyeIcon />
             </Button>
+            {cell.row.deleted ? (
+              <Button
+                color="success"
+                variant="contained"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  restore(cell.row._id);
+                }}
+              >
+                Restore
+              </Button>
+            ) : (
+              <Button
+                color="error"
+                variant="contained"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      deleteIntervention(cell.row._id);
+                    }
+                  });
+                }}
+              >
+                Delete
+              </Button>
+            )}
           </Stack>
         );
       },

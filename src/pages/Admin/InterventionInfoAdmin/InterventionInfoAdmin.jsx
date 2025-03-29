@@ -1,4 +1,16 @@
-import { Button, Stack, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -13,7 +25,11 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 const InterventionInfoAdmin = () => {
   const params = useParams();
-  const { token } = useSelector((state) => state);
+  const [open, setOpen] = useState(false);
+  const [techniciens, setTechniciens] = useState([]);
+  const [category, setCategory] = useState(null);
+  const [inputTechnicien, setInputTechnicien] = useState(null);
+  const { token, user } = useSelector((state) => state);
   const [interventionInfo, setInterventionInfo] = useState(null);
   const getInfo = () => {
     axios
@@ -28,8 +44,22 @@ const InterventionInfoAdmin = () => {
       });
   };
 
+  const getTechniciens = () => {
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "users/role/technicien", {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((response) => {
+        setTechniciens(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getInfo();
+    getTechniciens();
   }, []);
 
   const deleteIntervention = () => {
@@ -60,10 +90,29 @@ const InterventionInfoAdmin = () => {
       });
   };
 
+  const editIntervention = () => {
+    axios
+      .put(
+        import.meta.env.VITE_BACKEND_URL + "interventions/" + params.id,
+        {
+          etat: inputTechnicien ? "affected" : interventionInfo.etat,
+          technicien: inputTechnicien ? inputTechnicien._id : undefined,
+          category,
+        },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        setCategory(null);
+        setOpen(false);
+        getInfo();
+        getTechniciens();
+      });
+  };
+
   return (
     <div>
       {interventionInfo ? (
-        <Stack>
+        <Stack pl={"25px"} pt={"25px"} spacing={2}>
           {interventionInfo.deleted && (
             <Stack direction={"row"} alignItems={"center"} height={"100px"}>
               <DeleteForeverIcon style={{ fontSize: "52px" }} color="error" />
@@ -97,6 +146,14 @@ const InterventionInfoAdmin = () => {
               </Stack>
             )}
           </Stack>
+          {interventionInfo.technicien && (
+            <Typography>
+              Technicien :
+              {interventionInfo.technicien.firstname +
+                " " +
+                interventionInfo.technicien.lastname}
+            </Typography>
+          )}
           <Typography>
             Date : {dayjs(interventionInfo.date).format("YYYY-MM-DD HH:mm")}
           </Typography>
@@ -116,6 +173,7 @@ const InterventionInfoAdmin = () => {
               {interventionInfo.intensity}
             </Typography>
           </Typography>
+          <Typography>Category : {interventionInfo.category}</Typography>
           <Typography>Error : {interventionInfo.error}</Typography>
           <Typography>
             Station :
@@ -131,45 +189,152 @@ const InterventionInfoAdmin = () => {
                 interventionInfo.gerant.lastname}
             </a>
           </Typography>
-          {interventionInfo.deleted == false ? (
-            <Button
-              style={{ width: "150px" }}
-              color="error"
-              variant="contained"
-              onClick={() => {
-                Swal.fire({
-                  title: "Are you sure?",
-                  text: "You won't be able to revert this!",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Yes, delete it!",
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    deleteIntervention();
-                  }
-                });
-              }}
-            >
-              Delete
-            </Button>
-          ) : (
-            <Button
-              style={{ width: "150px" }}
-              color="success"
-              variant="contained"
-              onClick={() => {
-                restore();
-              }}
-            >
-              Restore
-            </Button>
+          {user.role == "admin" &&
+            (interventionInfo.deleted == false ? (
+              <Button
+                style={{ width: "150px" }}
+                color="error"
+                variant="contained"
+                onClick={() => {
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      deleteIntervention();
+                    }
+                  });
+                }}
+              >
+                Delete
+              </Button>
+            ) : (
+              <Button
+                style={{ width: "150px" }}
+                color="success"
+                variant="contained"
+                onClick={() => {
+                  restore();
+                }}
+              >
+                Restore
+              </Button>
+            ))}
+          {user.role == "assistant" && interventionInfo.deleted == false && (
+            <Stack direction={"row"} spacing={2}>
+              <Button
+                variant="contained"
+                color="warning"
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                Edit
+              </Button>
+
+              <Button
+                style={{ width: "150px" }}
+                color="error"
+                variant="contained"
+                onClick={() => {
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!",
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      deleteIntervention();
+                    }
+                  });
+                }}
+              >
+                Delete
+              </Button>
+            </Stack>
           )}
         </Stack>
       ) : (
         "Loading ..."
       )}
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Stack
+          style={{
+            height: "300px",
+            width: "350px",
+            background: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={2}
+        >
+          <FormControl sx={{ width: 300 }}>
+            <InputLabel id="demo-simple-select-label">Category</InputLabel>
+            <Select
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              label="Age"
+            >
+              <MenuItem value={"dga"}>D G A</MenuItem>
+              <MenuItem value={"comptabilité"}>Compta</MenuItem>
+              <MenuItem value={"commerciale gaz"}>Gaz</MenuItem>
+              <MenuItem value={"exploitation"}>Exploitation</MenuItem>
+              <MenuItem value={"financiere"}>Financiere</MenuItem>
+              <MenuItem value={"maitenance"}>Maitenance</MenuItem>
+              <MenuItem value={"marketing"}>Marketing</MenuItem>
+              <MenuItem value={"securite"}>Securite</MenuItem>
+              <MenuItem value={"commerciale des reseaux"}>Reseau</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Autocomplete
+            options={techniciens}
+            sx={{ width: 300 }}
+            onChange={(event, newValue) => {
+              setInputTechnicien(newValue);
+            }}
+            autoHighlight
+            getOptionLabel={(option) => option.firstname}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props;
+              return <Box {...optionProps}>{option.firstname}</Box>;
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Techniciens" />
+            )}
+          />
+          <Button
+            onClick={() => {
+              editIntervention();
+            }}
+          >
+            Save
+          </Button>
+        </Stack>
+      </Modal>
     </div>
   );
 };
