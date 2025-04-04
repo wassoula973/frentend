@@ -26,10 +26,35 @@ const ListRequests = () => {
   const { user, token } = useSelector((state) => state);
   const [open, setOpen] = useState(false);
   const [techniciens, setTechniciens] = useState([]);
+  const [intensity, setIntensity] = useState(null);
   const [category, setCategory] = useState(null);
   const [inputTechnicien, setInputTechnicien] = useState(null);
   const [selectedIntervention, setSelectedIntervention] = useState(null);
   const [search, setSearch] = useState("");
+  const [selectedInterventions, setSelectedInterventions] = useState([]);
+  const deleteMultiple = () => {
+    axios
+      .delete(
+        import.meta.env.VITE_BACKEND_URL + "admin/interventions/multiple",
+        {
+          headers: { Authorization: "Bearer " + token },
+          data: { listId: selectedInterventions },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        getInterventions();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const editIntervention = () => {
     axios
       .put(
@@ -40,6 +65,7 @@ const ListRequests = () => {
           etat: inputTechnicien ? "affected" : selectedIntervention.etat,
           technicien: inputTechnicien ? inputTechnicien._id : undefined,
           category,
+          intensity,
         },
         { headers: { Authorization: "Bearer " + token } }
       )
@@ -67,6 +93,20 @@ const ListRequests = () => {
       });
   };
 
+  const cancelIntervention = (id) => {
+    axios
+      .put(
+        import.meta.env.VITE_BACKEND_URL + "interventions/" + id,
+        {
+          etat: "canceled",
+        },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getInterventions();
+      });
+  };
+
   const columns = [
     { field: "id", headerName: "ID", flex: 1, sortable: false },
     { field: "category", headerName: "Category", flex: 1 },
@@ -78,15 +118,62 @@ const ListRequests = () => {
         return <>{dayjs(cell.row.date).format("YYYY-MM-DD HH:mm")}</>;
       },
     },
-    { field: "etat", headerName: "State", flex: 0.3 },
-    { field: "intensity", headerName: "Intensity", flex: 0.3 },
+    {
+      field: "etat",
+      headerName: "State",
+      flex: 0.3,
+      renderCell: (cell) => {
+        return (
+          <Stack
+            direction={"row"}
+            spacing={2}
+            alignItems={"center"}
+            height={"100%"}
+          >
+            <Typography
+              className={cell.row.etat}
+              style={{ textTransform: "capitalize" }}
+            >
+              {cell.row.etat}
+            </Typography>
+          </Stack>
+        );
+      },
+    },
+    {
+      field: "intensity",
+      headerName: "Intensity",
+      flex: 0.3,
+      renderCell: (cell) => {
+        return (
+          <Stack
+            direction={"row"}
+            spacing={2}
+            alignItems={"center"}
+            height={"100%"}
+          >
+            <Typography
+              className={cell.row.intensity}
+              style={{ textTransform: "capitalize" }}
+            >
+              {cell.row.intensity}
+            </Typography>
+          </Stack>
+        );
+      },
+    },
     {
       field: "action",
       headerName: "Actions",
       flex: 1,
       renderCell: (cell) => {
         return (
-          <Stack direction={"row"} spacing={2}>
+          <Stack
+            direction={"row"}
+            spacing={2}
+            alignItems={"center"}
+            height={"100%"}
+          >
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -95,13 +182,19 @@ const ListRequests = () => {
             >
               Show more
             </Button>
-            {user.role == "assistant" && cell.row.etat !== "done" ? (
+            {user.role == "assistant" &&
+            cell.row.etat !== "done" &&
+            cell.row.etat !== "canceled" ? (
               <>
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpen(true);
                     setSelectedIntervention(cell.row);
+
+                    setIntensity(cell.row.intensity);
+                    setCategory(cell.row.category);
+                    setInputTechnicien(cell.row.technicien);
                   }}
                   color="warning"
                   variant="contained"
@@ -141,6 +234,20 @@ const ListRequests = () => {
                   Delete
                 </Button>
               </>
+            ) : user.role == "gerant" &&
+              cell.row.etat !== "done" &&
+              cell.row.etat !== "canceled" &&
+              cell.row.deleted == false ? (
+              <Button
+                color="error"
+                variant="contained"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  cancelIntervention(cell.row._id);
+                }}
+              >
+                Canceled
+              </Button>
             ) : (
               user.role == "technicien" && <Button>Change State</Button>
             )}
@@ -212,7 +319,40 @@ const ListRequests = () => {
             variant="outlined"
           />
         </Box>
+        {selectedInterventions.length > 0 && (
+          <Button
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  deleteMultiple();
+                }
+              });
+            }}
+            style={{ margin: "25px" }}
+            color="error"
+            variant="contained"
+          >
+            Delete Checked Rows
+          </Button>
+        )}
+
         <DataGrid
+          getCellClassName={(cell) =>
+            `${
+              cell.field != "actions" && cell.row.deleted ? "row_deleted" : ""
+            }`
+          }
+          onRowSelectionModelChange={(rows) => {
+            setSelectedInterventions(rows);
+          }}
           rows={interventions
             .filter(
               (i) =>
@@ -257,8 +397,26 @@ const ListRequests = () => {
           spacing={2}
         >
           <FormControl sx={{ width: 300 }}>
+            <InputLabel id="demo-simple-select-label">Intensity</InputLabel>
+            <Select
+              defaultValue={"danger"}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={intensity}
+              label="Age"
+              onChange={(e) => {
+                setIntensity(e.target.value);
+              }}
+            >
+              <MenuItem value={"danger"}>Danger</MenuItem>
+              <MenuItem value={"warning"}>Warning</MenuItem>
+              <MenuItem value={"normal"}>Normal</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl sx={{ width: 300 }}>
             <InputLabel id="demo-simple-select-label">Category</InputLabel>
             <Select
+              defaultValue={category}
               value={category}
               onChange={(e) => {
                 setCategory(e.target.value);
@@ -278,8 +436,8 @@ const ListRequests = () => {
               <MenuItem value={"commerciale des reseaux"}>Reseau</MenuItem>
             </Select>
           </FormControl>
-
           <Autocomplete
+            defaultValue={inputTechnicien}
             options={techniciens}
             sx={{ width: 300 }}
             onChange={(event, newValue) => {

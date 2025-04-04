@@ -29,12 +29,48 @@ const ListStation = () => {
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [selectedStations, setSelectedStations] = useState([]);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
     setGerant(value);
+  };
+
+  const deleteMultiple = () => {
+    axios
+      .delete(import.meta.env.VITE_BACKEND_URL + "admin/stations/multiple", {
+        headers: { Authorization: "Bearer " + token },
+        data: { listId: selectedStations },
+      })
+      .then((response) => {
+        console.log(response.data);
+        getAllStations();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const restoreMultiple = () => {
+    axios
+      .patch(
+        import.meta.env.VITE_BACKEND_URL + "admin/stations/multiple",
+        { listId: selectedStations },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllStations();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const deleteStation = (id) => {
@@ -223,7 +259,7 @@ const ListStation = () => {
             variant="outlined"
           />
         </Box>
-        {/* {selectedUsers.length > 0 && (
+        {selectedStations.length > 0 && (
           <Button
             onClick={() => {
               Swal.fire({
@@ -246,9 +282,9 @@ const ListStation = () => {
           >
             Delete Checked Rows
           </Button>
-        )} */}
+        )}
 
-        {/* {selectedUsers.length > 0 && (
+        {selectedStations.length > 0 && (
           <Button
             onClick={() => {
               restoreMultiple();
@@ -258,11 +294,11 @@ const ListStation = () => {
           >
             Restore Checked Rows
           </Button>
-        )} */}
+        )}
 
         <DataGrid
           onRowSelectionModelChange={(rows) => {
-            // setSelectedUsers(rows);
+            setSelectedStations(rows);
           }}
           rows={stations
             .filter((s) => {

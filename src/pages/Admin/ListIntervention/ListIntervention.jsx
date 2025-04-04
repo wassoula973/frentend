@@ -11,10 +11,48 @@ import Swal from "sweetalert2";
 
 const ListIntervention = () => {
   const [search, setSearch] = useState("");
-  const [selectedInterventions, setSelectedInterventions] = useState([]);
+
   const [interventions, setInterventions] = useState([]);
   const { token } = useSelector((state) => state);
   const navigate = useNavigate();
+  const [selectedInterventions, setSelectedInterventions] = useState([]);
+  const deleteMultiple = () => {
+    axios
+      .delete(
+        import.meta.env.VITE_BACKEND_URL + "admin/interventions/multiple",
+        {
+          headers: { Authorization: "Bearer " + token },
+          data: { listId: selectedInterventions },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        getAll();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const restoreMultiple = () => {
+    axios
+      .patch(
+        import.meta.env.VITE_BACKEND_URL + "admin/interventions/multiple",
+        { listId: selectedInterventions },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAll();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const deleteIntervention = (id) => {
     axios
@@ -161,6 +199,42 @@ const ListIntervention = () => {
             variant="outlined"
           />
         </Box>
+        {selectedInterventions.length > 0 && (
+          <Button
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  deleteMultiple();
+                }
+              });
+            }}
+            style={{ margin: "25px" }}
+            color="error"
+            variant="contained"
+          >
+            Delete Checked Rows
+          </Button>
+        )}
+        {selectedInterventions.length > 0 && (
+          <Button
+            onClick={() => {
+              restoreMultiple();
+            }}
+            color="success"
+            variant="contained"
+          >
+            Restore Checked Rows
+          </Button>
+        )}
+
         <DataGrid
           onRowSelectionModelChange={(rows) => {
             setSelectedInterventions(rows);

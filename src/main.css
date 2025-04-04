@@ -37,3 +37,14 @@ input[type="number"] {
 .btn-menu:hover {
   opacity: 1;
 }
+
+.danger {
+  color: #f00;
+}
+
+.warning {
+  color: chocolate;
+}
+
+.normal {
+}

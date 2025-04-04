@@ -222,6 +222,7 @@ const ListUsers = () => {
         console.log(error);
       });
   };
+
   const paginationModel = { page: 0, pageSize: 10 };
 
   return (
@@ -275,8 +276,6 @@ const ListUsers = () => {
         )}
         <DataGrid
           onRowSelectionModelChange={(rows) => {
-            console.log(rows);
-
             setSelectedUsers(rows);
           }}
           rows={users

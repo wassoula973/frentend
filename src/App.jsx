@@ -57,6 +57,11 @@ function App() {
               <Route path="/requests" element={<ListRequests />} />
               <Route path="/request/:id" element={<RequestInfo />} />
               <Route path="/station" element={<StationInfo />} />
+              <Route path="/station/:id" element={<StationInfoAdmin />} />
+              <Route
+                path="/intervention/:id"
+                element={<InterventionInfoAdmin />}
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "technicien" ? (
@@ -68,6 +73,8 @@ function App() {
           ) : user.role == "assistant" ? (
             <Routes>
               <Route path="/" element={<HomeAssistant />} />
+              <Route path="/station/:id" element={<StationInfoAdmin />} />{" "}
+              <Route path="/user/:id" element={<UserInfo />} />
               <Route
                 path="/intervention/:id"
                 element={<InterventionInfoAdmin />}

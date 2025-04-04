@@ -179,13 +179,15 @@ const InterventionInfoAdmin = () => {
             Station :
             <a href={"/station/" + interventionInfo.station._id}>
               {interventionInfo.station.adresse +
+                " " +
                 interventionInfo.station.gouvernorat}
             </a>
           </Typography>
           <Typography>
-            Station :
+            Gérant :
             <a href={"/user/" + interventionInfo.gerant._id}>
               {interventionInfo.gerant.firstname +
+                " " +
                 interventionInfo.gerant.lastname}
             </a>
           </Typography>
