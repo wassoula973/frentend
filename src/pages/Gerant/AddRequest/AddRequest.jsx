@@ -43,7 +43,7 @@ const AddRequest = () => {
     formdata.append("station", user.station._id);
     formdata.append("error", data.error);
     formdata.append("category", data.category);
-
+    formdata.append("material", data.material);
     formdata.append("intensity", data.intensity);
     formdata.append("image", image);
 
@@ -141,6 +141,33 @@ const AddRequest = () => {
                 </FormControl>
               )}
             />
+
+            {user.station &&
+              user.station.listmateriel &&
+              user.station.listmateriel.length > 1 && (
+                <Controller
+                  control={control}
+                  name="material"
+                  render={({ field: { value, onChange } }) => (
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-simple-select-label">
+                        Material
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={value}
+                        label="Age"
+                        onChange={onChange}
+                      >
+                        {user.station.listmateriel.map((m) => {
+                          return <MenuItem value={m.id}>{m.type}</MenuItem>;
+                        })}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              )}
 
             <Controller
               control={control}

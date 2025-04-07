@@ -14,9 +14,30 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../../redux/reducer";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ReportIcon from "@mui/icons-material/Report";
 
 const StationInfo = () => {
-  const columns = [{ field: "id" }, { field: "type" }];
+  const columns = [
+    { field: "id" },
+    { field: "type" },
+    {
+      field: "etat",
+      headerName: "State",
+      flex: 1,
+      renderCell: (cell) => {
+        return (
+          <Stack justifyContent={"center"} height={"100%"}>
+            {cell.row.etat == "bien" ? (
+              <CheckCircleIcon color="success" />
+            ) : (
+              <ReportIcon color="warning" />
+            )}
+          </Stack>
+        );
+      },
+    },
+  ];
   const paginationModel = { page: 0, pageSize: 5 };
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(null);
