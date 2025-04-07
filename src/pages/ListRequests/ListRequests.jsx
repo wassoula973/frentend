@@ -163,7 +163,7 @@ const ListRequests = () => {
       },
     },
     {
-      field: "action",
+      field: "actions",
       headerName: "Actions",
       flex: 1,
       renderCell: (cell) => {
