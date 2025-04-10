@@ -255,7 +255,9 @@ const ListIntervention = () => {
                   .toLowerCase()
                   .includes(search.toLowerCase()) ||
                 i._id.toLowerCase().includes(search.toLowerCase()) ||
-                i.date.toLowerCase().includes(search.toLowerCase())
+                i.date.toLowerCase().includes(search.toLowerCase()) ||
+                i.etat.toLowerCase().includes(search.toLowerCase()) ||
+                i.intensity.toLowerCase().includes(search.toLowerCase())
               );
             })
             .map((i) => {

@@ -107,15 +107,54 @@ const ListRequests = () => {
       });
   };
 
+  const validateIntervention = (id) => {
+    axios
+      .put(
+        import.meta.env.VITE_BACKEND_URL + "interventions/" + id,
+        {
+          etat: "done",
+        },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getInterventions();
+      });
+  };
+
   const columns = [
     { field: "id", headerName: "ID", flex: 1, sortable: false },
-    { field: "category", headerName: "Category", flex: 1 },
+    { field: "category", headerName: "Category", flex: 0.6 },
     {
       field: "date",
       headerName: "Date",
-      flex: 1,
+      flex: 0.6,
       renderCell: (cell) => {
         return <>{dayjs(cell.row.date).format("YYYY-MM-DD HH:mm")}</>;
+      },
+    },
+    {
+      field: "station",
+      headerName: "Station",
+      flex: 1,
+      renderCell: (cell) => {
+        return cell.row.station.adresse + " " + cell.row.station.gouvernorat;
+      },
+    },
+    {
+      field: "gerant",
+      headerName: "Gerant",
+      flex: 1,
+      renderCell: (cell) => {
+        return (
+          <Stack direction={"row"} height={"100%"} alignItems={"center"}>
+            <Typography textTransform={"capitalize"}>
+              {cell.row.gerant.firstname +
+                " " +
+                cell.row.gerant.lastname +
+                (cell.row.gerant.phone ? " : " + cell.row.gerant.phone : "")}
+            </Typography>
+          </Stack>
+        );
       },
     },
     {
@@ -163,7 +202,7 @@ const ListRequests = () => {
       },
     },
     {
-      field: "action",
+      field: "actions",
       headerName: "Actions",
       flex: 1,
       renderCell: (cell) => {
@@ -249,7 +288,19 @@ const ListRequests = () => {
                 Canceled
               </Button>
             ) : (
-              user.role == "technicien" && <Button>Change State</Button>
+              user.role == "technicien" &&
+              cell.row.etat == "affected" && (
+                <Button
+                  color="success"
+                  variant="contained"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    validateIntervention(cell.row._id);
+                  }}
+                >
+                  Validate
+                </Button>
+              )
             )}
           </Stack>
         );
@@ -277,6 +328,20 @@ const ListRequests = () => {
         .get(
           import.meta.env.VITE_BACKEND_URL +
             "interventions/assistant/" +
+            user._id,
+          { headers: { Authorization: "Bearer " + token } }
+        )
+        .then((response) => {
+          setInterventions(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else if (user.role == "technicien") {
+      axios
+        .get(
+          import.meta.env.VITE_BACKEND_URL +
+            "interventions/technicien/" +
             user._id,
           { headers: { Authorization: "Bearer " + token } }
         )
@@ -319,7 +384,7 @@ const ListRequests = () => {
             variant="outlined"
           />
         </Box>
-        {selectedInterventions.length > 0 && (
+        {selectedInterventions.length > 0 && user.role != "technicien" && (
           <Button
             onClick={() => {
               Swal.fire({
@@ -353,6 +418,7 @@ const ListRequests = () => {
           onRowSelectionModelChange={(rows) => {
             setSelectedInterventions(rows);
           }}
+          rowSelection={user.role == "technicien" ? false : true}
           rows={interventions
             .filter(
               (i) =>

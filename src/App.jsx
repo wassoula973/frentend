@@ -66,8 +66,11 @@ function App() {
             </Routes>
           ) : user.role == "technicien" ? (
             <Routes>
-              <Route path="/" element={<p>Aceuil technicien</p>} />
-              <Route path="/requests" element={<ListRequests />} />
+              <Route path="/" element={<ListRequests />} />
+              <Route
+                path="/intervention/:id"
+                element={<InterventionInfoAdmin />}
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "assistant" ? (

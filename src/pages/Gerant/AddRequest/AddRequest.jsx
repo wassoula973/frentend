@@ -57,7 +57,7 @@ const AddRequest = () => {
           icon: "success",
           title:
             "Your request has been saved ! Your Ticket ID is : " +
-            response.data._id,
+            response.data.intervention._id,
           showConfirmButton: false,
         });
         navigate("/");
@@ -160,9 +160,13 @@ const AddRequest = () => {
                         label="Age"
                         onChange={onChange}
                       >
-                        {user.station.listmateriel.map((m) => {
-                          return <MenuItem value={m.id}>{m.type}</MenuItem>;
-                        })}
+                        {user.station.listmateriel
+                          .filter((m) => {
+                            return m.etat == "bien";
+                          })
+                          .map((m) => {
+                            return <MenuItem value={m.id}>{m.type}</MenuItem>;
+                          })}
                       </Select>
                     </FormControl>
                   )}
