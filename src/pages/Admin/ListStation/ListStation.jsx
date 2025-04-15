@@ -23,19 +23,61 @@ import Swal from "sweetalert2";
 const ListStation = () => {
   const [stations, setStations] = useState([]);
   const [gerants, setGerants] = useState([]);
-  const [gerant, setGerant] = useState([]);
+  const [gerant, setGerant] = useState(null);
   const [selectedStation, setStationSelected] = useState(null);
+  const [adresse, setAdresse] = useState("");
+  const [gouvernorat, setGouvernorat] = useState(null);
   const { token } = useSelector((state) => state);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [openAdd, setOpenAdd] = useState(false);
   const [selectedStations, setSelectedStations] = useState([]);
+
+  const list = [
+    "Bizerte",
+    "Tunis",
+    "Bèja",
+    "Mannouba",
+    "Ben Arous",
+    "Ariana",
+    "Nabeul",
+    "Sousse",
+    "Zaghouan",
+    "Kairouan",
+    "Siliana",
+    "Jandouba",
+    "Kef",
+    "Sidi Bouzid",
+    "Gasserin",
+    "Monastir",
+    "Mahdia",
+    "Sfax",
+    "Gabes",
+    "Mednin",
+    "Tataouin",
+    "Tozeur",
+    "Gafsa",
+    "Gbelli",
+  ];
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
     setGerant(value);
+  };
+
+  const handleChangeGouvernorat = (event) => {
+    const {
+      target: { value },
+    } = event;
+    console.log(value);
+
+    setGouvernorat(
+      // On autofill we get a stringified value.
+      value
+    );
   };
 
   const deleteMultiple = () => {
@@ -237,6 +279,29 @@ const ListStation = () => {
       });
   };
 
+  const addStation = () => {
+    axios
+      .post(
+        import.meta.env.VITE_BACKEND_URL + "stations",
+        {
+          gerant: gerant ? gerant : undefined,
+          adresse,
+          gouvernorat,
+        },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        getAllStations();
+        setGerant(null);
+        setGouvernorat(null);
+        setOpenAdd(false);
+        setAdresse("");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     getAllStations();
     getGerants();
@@ -259,6 +324,16 @@ const ListStation = () => {
             variant="outlined"
           />
         </Box>
+
+        <Button
+          onClick={() => {
+            setOpenAdd(true);
+          }}
+          color="success"
+          variant="contained"
+        >
+          Add station
+        </Button>
         {selectedStations.length > 0 && (
           <Button
             onClick={() => {
@@ -374,6 +449,82 @@ const ListStation = () => {
             }}
           >
             Confirm
+          </Button>
+        </Stack>
+      </Modal>
+
+      <Modal
+        open={openAdd}
+        onClose={() => {
+          setOpenAdd(false);
+        }}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Stack
+          style={{
+            height: "300px",
+            width: "350px",
+            background: "white",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+          }}
+          justifyContent={"center"}
+          alignItems={"center"}
+          spacing={2}
+        >
+          <TextField
+            required
+            sx={{ m: 1, width: 300 }}
+            label="Adresse"
+            name="adresse"
+            value={adresse}
+            onChange={(e) => setAdresse(e.target.value)}
+          />
+          <Select
+            required
+            label="Gouvernorat"
+            sx={{ m: 1, width: 300 }}
+            labelId="demo-multiple-name-label"
+            id="demo-multiple-name"
+            value={gouvernorat}
+            onChange={handleChangeGouvernorat}
+            input={<OutlinedInput label="Name" />}
+          >
+            {list.sort().map((name) => (
+              <MenuItem key={name} value={name}>
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormControl sx={{ m: 1, width: 300 }}>
+            <InputLabel id="demo-multiple-name-label">Gerant</InputLabel>
+            <Select
+              labelId="demo-multiple-name-label"
+              id="demo-multiple-name"
+              value={gerant}
+              onChange={handleChange}
+              input={<OutlinedInput label="List Gerants" />}
+            >
+              {gerants.map((g) => {
+                return (
+                  <MenuItem value={g._id}>
+                    {g.firstname + " " + g.lastname}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <Button
+            color="success"
+            variant="contained"
+            onClick={() => {
+              addStation();
+            }}
+          >
+            Save
           </Button>
         </Stack>
       </Modal>
