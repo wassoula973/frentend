@@ -18,6 +18,32 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ReportIcon from "@mui/icons-material/Report";
 
 const StationInfo = () => {
+  const deleteMaterial = (id) => {
+    var temp = [...user.station.listmateriel];
+    temp = temp.filter((m) => {
+      return m.id != id;
+    });
+
+    axios
+      .put(
+        import.meta.env.VITE_BACKEND_URL + "stations/" + user.station._id,
+        {
+          listmateriel: temp,
+          gerant: user._id,
+        },
+        { headers: { Authorization: "Bearer " + token } }
+      )
+      .then((response) => {
+        dispatch(
+          login({
+            user: response.data.user,
+            token: response.data.token,
+            stayConnected: true,
+          })
+        );
+      });
+  };
+
   const columns = [
     { field: "id" },
     { field: "type" },
@@ -34,6 +60,24 @@ const StationInfo = () => {
               <ReportIcon color="warning" />
             )}
           </Stack>
+        );
+      },
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      renderCell: (cell) => {
+        return (
+          <Button
+            color="error"
+            variant="contained"
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteMaterial(cell.row.id);
+            }}
+          >
+            Delete
+          </Button>
         );
       },
     },

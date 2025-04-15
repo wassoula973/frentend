@@ -15,9 +15,10 @@ import { styled } from "@mui/material/styles";
 
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { login } from "../../../redux/reducer";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -36,6 +37,7 @@ const AddRequest = () => {
   const { control, handleSubmit, setError } = useForm();
   const [image, setImage] = useState(null);
   const { user, token } = useSelector((state) => state);
+  const dispatch = useDispatch();
 
   const addRequestAction = (data) => {
     const formdata = new FormData(); // ki tabda bch tab3eth request feha fichier
@@ -52,6 +54,13 @@ const AddRequest = () => {
         headers: { Authorization: "Bearer " + token },
       })
       .then((response) => {
+        dispatch(
+          login({
+            user: response.data.user,
+            token: response.data.token,
+            stayConnected: true,
+          })
+        );
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -157,12 +166,12 @@ const AddRequest = () => {
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={value}
-                        label="Age"
+                        label="Material"
                         onChange={onChange}
                       >
                         {user.station.listmateriel
                           .filter((m) => {
-                            return m.etat == "bien";
+                            return m.etat != "en panne";
                           })
                           .map((m) => {
                             return <MenuItem value={m.id}>{m.type}</MenuItem>;
