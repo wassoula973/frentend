@@ -227,42 +227,44 @@ const InterventionInfoAdmin = () => {
                 Restore
               </Button>
             ))}
-          {user.role == "assistant" && interventionInfo.deleted == false && (
-            <Stack direction={"row"} spacing={2}>
-              <Button
-                variant="contained"
-                color="warning"
-                onClick={() => {
-                  setOpen(true);
-                }}
-              >
-                Edit
-              </Button>
+          {user.role == "assistant" &&
+            interventionInfo.deleted == false &&
+            interventionInfo.etat != "done" && (
+              <Stack direction={"row"} spacing={2}>
+                <Button
+                  variant="contained"
+                  color="warning"
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                >
+                  Edit
+                </Button>
 
-              <Button
-                style={{ width: "150px" }}
-                color="error"
-                variant="contained"
-                onClick={() => {
-                  Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      deleteIntervention();
-                    }
-                  });
-                }}
-              >
-                Delete
-              </Button>
-            </Stack>
-          )}
+                <Button
+                  style={{ width: "150px" }}
+                  color="error"
+                  variant="contained"
+                  onClick={() => {
+                    Swal.fire({
+                      title: "Are you sure?",
+                      text: "You won't be able to revert this!",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, delete it!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        deleteIntervention();
+                      }
+                    });
+                  }}
+                >
+                  Delete
+                </Button>
+              </Stack>
+            )}
         </Stack>
       ) : (
         "Loading ..."

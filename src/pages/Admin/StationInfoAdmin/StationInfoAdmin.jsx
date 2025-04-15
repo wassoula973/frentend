@@ -196,6 +196,7 @@ const StationInfoAdmin = () => {
                   style={{
                     marginLeft: "20px",
                     fontWeight: "bold",
+                    color: "#f281ff",
                   }}
                 >
                   <EmailIcon color="error" /> Email :{stationInfo.gerant.email}
