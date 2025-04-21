@@ -18,7 +18,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { control, handleSubmit, setError } = useForm({
-    defaultValues: { stayConnected: false },
+    defaultValues: { stayConnected: true },
   });
 
   const actionLogin = (data) => {
@@ -134,7 +134,13 @@ const Login = () => {
                 name="stayConnected"
                 render={({ field: { value, onChange } }) => (
                   <FormControlLabel
-                    control={<Checkbox value={value} onChange={onChange} />}
+                    control={
+                      <Checkbox
+                        defaultChecked
+                        value={value}
+                        onChange={onChange}
+                      />
+                    }
                     label="Stay Connected"
                   />
                 )}

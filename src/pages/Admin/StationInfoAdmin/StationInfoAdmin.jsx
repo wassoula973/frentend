@@ -158,7 +158,7 @@ const StationInfoAdmin = () => {
                 fontWeight: "bold",
               }}
             >
-              <LocationOnIcon color="primary" /> Votre adresse est :
+              <LocationOnIcon color="primary" /> L'adresse du Station est :
               {stationInfo.adresse}
             </Typography>
             <Typography

@@ -19,6 +19,7 @@ import ListStation from "./pages/Admin/ListStation/ListStation";
 import StationInfoAdmin from "./pages/Admin/StationInfoAdmin/StationInfoAdmin";
 import ListIntervention from "./pages/Admin/ListIntervention/ListIntervention";
 import InterventionInfoAdmin from "./pages/Admin/InterventionInfoAdmin/InterventionInfoAdmin";
+import Profil from "./pages/Profil/Profil";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/stations" element={<ListStation />} />
                 <Route path="/station/:id" element={<StationInfoAdmin />} />
                 <Route path="/interventions" element={<ListIntervention />} />
+                <Route path="/profil" element={<Profil />} />
                 <Route
                   path="/intervention/:id"
                   element={<InterventionInfoAdmin />}
@@ -62,6 +64,7 @@ function App() {
                 path="/intervention/:id"
                 element={<InterventionInfoAdmin />}
               />
+              <Route path="/profil" element={<Profil />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "technicien" ? (
@@ -71,6 +74,7 @@ function App() {
                 path="/intervention/:id"
                 element={<InterventionInfoAdmin />}
               />
+              <Route path="/profil" element={<Profil />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "assistant" ? (
@@ -82,6 +86,7 @@ function App() {
                 path="/intervention/:id"
                 element={<InterventionInfoAdmin />}
               />
+              <Route path="/profil" element={<Profil />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : (
