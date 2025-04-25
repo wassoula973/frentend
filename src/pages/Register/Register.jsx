@@ -15,6 +15,7 @@ import agilLogo from "../../assets/logo-agil.png";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -41,6 +42,12 @@ const Register = () => {
         { headers: { Authorization: "Bearer " + token } }
       )
       .then((response) => {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "The account created successfuly",
+          showConfirmButton: false,
+        });
         navigate("/users");
       })
       .catch((error) => {

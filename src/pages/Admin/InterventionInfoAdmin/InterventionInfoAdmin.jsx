@@ -191,7 +191,7 @@ const InterventionInfoAdmin = () => {
                 interventionInfo.gerant.lastname}
             </a>
           </Typography>
-          {user.role == "admin" &&
+          {/* {user.role == "admin" &&
             (interventionInfo.deleted == false ? (
               <Button
                 style={{ width: "150px" }}
@@ -226,7 +226,7 @@ const InterventionInfoAdmin = () => {
               >
                 Restore
               </Button>
-            ))}
+            ))} */}
           {user.role == "assistant" &&
             interventionInfo.deleted == false &&
             interventionInfo.etat != "done" && (

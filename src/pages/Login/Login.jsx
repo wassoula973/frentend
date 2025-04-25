@@ -145,11 +145,7 @@ const Login = () => {
                   />
                 )}
               />
-              <Typography>Forget Password ?</Typography>
             </Stack>
-            <a href="/register">
-              <Typography>I don't have an account</Typography>
-            </a>
           </Stack>
         </form>
       </Stack>
