@@ -270,21 +270,10 @@ const ListUsers = () => {
             color="error"
             variant="contained"
           >
-            Delete Checked Rows
+            Deactivate Checked Rows
           </Button>
         )}
 
-        {selectedUsers.length > 0 && (
-          <Button
-            onClick={() => {
-              restoreMultiple();
-            }}
-            color="success"
-            variant="contained"
-          >
-            Restore Checked Rows
-          </Button>
-        )}
         <DataGrid
           onRowSelectionModelChange={(rows) => {
             setSelectedUsers(rows);

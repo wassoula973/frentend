@@ -145,7 +145,7 @@ const UserInfo = () => {
               <Stack direction={"row"} alignItems={"center"} height={"100px"}>
                 <DeleteForeverIcon style={{ fontSize: "52px" }} color="error" />
                 <Typography style={{ color: "red" }}>
-                  This User is deleted !
+                  This User is deactivated !
                 </Typography>
               </Stack>
             )}
@@ -290,16 +290,22 @@ const UserInfo = () => {
             )}
 
             {UserInfo.deleted ? (
-              <Button
-                style={{ height: "50px", width: "250px", alignSelf: "center" }}
-                color="success"
-                variant="contained"
-                onClick={() => {
-                  restoreUser();
-                }}
-              >
-                Restore
-              </Button>
+              <>
+                {/* <Button
+                  style={{
+                    height: "50px",
+                    width: "250px",
+                    alignSelf: "center",
+                  }}
+                  color="success"
+                  variant="contained"
+                  onClick={() => {
+                    restoreUser();
+                  }}
+                >
+                  Restore
+                </Button> */}
+              </>
             ) : (
               <Button
                 style={{ height: "50px", width: "250px", alignSelf: "center" }}
@@ -321,7 +327,7 @@ const UserInfo = () => {
                   });
                 }}
               >
-                Delete
+                Deactivate
               </Button>
             )}
           </Stack>
