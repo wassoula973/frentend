@@ -9,27 +9,37 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import axios from "axios";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import agilLogo from "../../assets/logo-agil.png";
-import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import agilLogo from "../../assets/logo-agil.png";
+import { login } from "../../redux/reducer";
 
-const Register = () => {
+const EditProfil = () => {
   const navigate = useNavigate();
-  const { token } = useSelector((state) => state);
+  const { token, user } = useSelector((state) => state);
+  const dispatch = useDispatch();
   const { control, handleSubmit, setError } = useForm({
-    defaultValues: { role: null },
+    defaultValues: {
+      role: user.role,
+      email: user.email,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      cin: user.cin,
+      phone: user.phone,
+    },
   });
 
   const registerAction = (data) => {
     const { firstname, lastname, cin, email, password, role, phone } = data;
 
     axios
-      .post(
+      .put(
         import.meta.env.VITE_BACKEND_URL + "users",
         {
+          id: user._id,
           firstname,
           lastname,
           cin,
@@ -41,7 +51,10 @@ const Register = () => {
         { headers: { Authorization: "Bearer " + token } }
       )
       .then((response) => {
-        navigate("/users");
+        dispatch(
+          login({ user: response.data.user, token, stayConnected: true })
+        );
+        navigate("/profil");
       })
       .catch((error) => {
         if (error.response.data.code == 11000) {
@@ -76,7 +89,7 @@ const Register = () => {
           />
         </Stack>
         <Typography textAlign={"center"} fontSize={"25px"} fontWeight={900}>
-          Add new User
+          Edit Profil
         </Typography>
         <form onSubmit={handleSubmit(registerAction)}>
           <Stack spacing={2} mt={"15px"}>
@@ -205,7 +218,6 @@ const Register = () => {
                 fieldState: { error },
               }) => (
                 <TextField
-                  required
                   size="small"
                   value={value}
                   onChange={onChange}
@@ -219,7 +231,7 @@ const Register = () => {
               )}
             />
 
-            <Controller
+            {/* <Controller
               control={control}
               name="role"
               render={({
@@ -258,13 +270,13 @@ const Register = () => {
                   </RadioGroup>
                 </FormControl>
               )}
-            />
+            /> */}
             <Button
               type="submit"
               style={{ background: "#fed000" }}
               variant="contained"
             >
-              Register
+              Edit Profil
             </Button>
           </Stack>
         </form>
@@ -273,4 +285,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default EditProfil;

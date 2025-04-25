@@ -20,6 +20,7 @@ import StationInfoAdmin from "./pages/Admin/StationInfoAdmin/StationInfoAdmin";
 import ListIntervention from "./pages/Admin/ListIntervention/ListIntervention";
 import InterventionInfoAdmin from "./pages/Admin/InterventionInfoAdmin/InterventionInfoAdmin";
 import Profil from "./pages/Profil/Profil";
+import EditProfil from "./pages/EditProfil/EditProfil";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -28,7 +29,7 @@ function App() {
       {user == null ? (
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       ) : (
@@ -45,10 +46,12 @@ function App() {
                 <Route path="/station/:id" element={<StationInfoAdmin />} />
                 <Route path="/interventions" element={<ListIntervention />} />
                 <Route path="/profil" element={<Profil />} />
+                <Route path="/edit_profil" element={<EditProfil />} />
                 <Route
                   path="/intervention/:id"
                   element={<InterventionInfoAdmin />}
                 />
+                <Route path="/add_user" element={<Register />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </>
@@ -65,6 +68,7 @@ function App() {
                 element={<InterventionInfoAdmin />}
               />
               <Route path="/profil" element={<Profil />} />
+              <Route path="/edit_profil" element={<EditProfil />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "technicien" ? (
@@ -75,6 +79,7 @@ function App() {
                 element={<InterventionInfoAdmin />}
               />
               <Route path="/profil" element={<Profil />} />
+              <Route path="/edit_profil" element={<EditProfil />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : user.role == "assistant" ? (
@@ -87,6 +92,7 @@ function App() {
                 element={<InterventionInfoAdmin />}
               />
               <Route path="/profil" element={<Profil />} />
+              <Route path="/edit_profil" element={<EditProfil />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           ) : (

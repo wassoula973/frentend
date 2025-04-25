@@ -46,7 +46,7 @@ const Login = () => {
         }
         if (error.status == 406)
           Swal.fire({
-            title: "Your account is Deleted !",
+            title: "Your account is deactivated !",
             icon: "error",
             draggable: true,
           });

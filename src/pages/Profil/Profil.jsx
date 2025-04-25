@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -33,6 +33,9 @@ const Profil = () => {
         >
           Profile
         </Typography>
+        <a href="/edit_profil">
+          <Typography textAlign={"right"}>Edit Profil</Typography>
+        </a>
         <Typography
           style={{
             marginLeft: "20px",

@@ -13,7 +13,7 @@ const ListIntervention = () => {
   const [search, setSearch] = useState("");
 
   const [interventions, setInterventions] = useState([]);
-  const { token } = useSelector((state) => state);
+  const { token, user } = useSelector((state) => state);
   const navigate = useNavigate();
   const [selectedInterventions, setSelectedInterventions] = useState([]);
   const deleteMultiple = () => {
@@ -127,41 +127,43 @@ const ListIntervention = () => {
             >
               <RemoveRedEyeIcon />
             </Button>
-            {cell.row.deleted ? (
-              <Button
-                color="success"
-                variant="contained"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  restore(cell.row._id);
-                }}
-              >
-                Restore
-              </Button>
-            ) : (
-              <Button
-                color="error"
-                variant="contained"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes, delete it!",
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-                      deleteIntervention(cell.row._id);
-                    }
-                  });
-                }}
-              >
-                Delete
-              </Button>
-            )}
+            {user.role == "assistant" ? (
+              cell.row.deleted ? (
+                <Button
+                  color="success"
+                  variant="contained"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    restore(cell.row._id);
+                  }}
+                >
+                  Restore
+                </Button>
+              ) : (
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    Swal.fire({
+                      title: "Are you sure?",
+                      text: "You won't be able to revert this!",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, delete it!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        deleteIntervention(cell.row._id);
+                      }
+                    });
+                  }}
+                >
+                  Delete
+                </Button>
+              )
+            ) : null}
           </Stack>
         );
       },

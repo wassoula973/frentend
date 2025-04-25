@@ -23,7 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import Swal from "sweetalert2";
 
 const ListUsers = () => {
-  const { token } = useSelector((state) => state);
+  const { token, user } = useSelector((state) => state);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [search, setSearch] = useState("");
@@ -87,7 +87,7 @@ const ListUsers = () => {
               </Button>
             ) : (
               <>
-                <Button
+                {/* <Button
                   color="warning"
                   variant="contained"
                   onClick={(e) => {
@@ -97,7 +97,7 @@ const ListUsers = () => {
                   }}
                 >
                   Change Role
-                </Button>
+                </Button> */}
                 <Button
                   color="error"
                   variant="contained"
@@ -111,7 +111,7 @@ const ListUsers = () => {
                       showCancelButton: true,
                       confirmButtonColor: "#3085d6",
                       cancelButtonColor: "#d33",
-                      confirmButtonText: "Yes, delete it!",
+                      confirmButtonText: "Yes, deactivate it!",
                     }).then((result) => {
                       if (result.isConfirmed) {
                         deleteUser(cell.row._id);
@@ -119,7 +119,7 @@ const ListUsers = () => {
                     });
                   }}
                 >
-                  Delete
+                  Deactivate
                 </Button>
               </>
             )}
@@ -152,8 +152,8 @@ const ListUsers = () => {
       .then((response) => {
         getAllUsers();
         Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
+          title: "Deactivated!",
+          text: "The user has been deactivated.",
           icon: "success",
         });
       });
@@ -238,6 +238,17 @@ const ListUsers = () => {
             variant="outlined"
           />
         </Box>
+        {user.role == "admin" && (
+          <Button
+            onClick={() => {
+              navigate("/add_user");
+            }}
+            color="success"
+            variant="contained"
+          >
+            Add User
+          </Button>
+        )}
         {selectedUsers.length > 0 && (
           <Button
             onClick={() => {
