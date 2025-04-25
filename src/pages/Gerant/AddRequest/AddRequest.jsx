@@ -116,7 +116,7 @@ const AddRequest = () => {
                       fuite au niveau de citerne
                     </MenuItem>
                     <MenuItem value={"piste"}>Problème de piste</MenuItem>
-                    <MenuItem value={"extincteur"}>Extinteur</MenuItem>
+                    <MenuItem value={"extincteur"}>Extincteur</MenuItem>
                     <MenuItem value={"lavage"}>Sale de lavage</MenuItem>
                     <MenuItem value={"retard"}>Retard de livraison</MenuItem>
                   </Select>
