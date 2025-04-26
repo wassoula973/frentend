@@ -46,11 +46,12 @@ const HomeAdmin = () => {
         justifyContent={"center"}
         alignItems={"center"}
         style={{
-          height: "450px",
-          width: "25%",
-          position: "relative",
-          background: "rgba(112,112,112,0.1)",
-          borderRadius: "15px",
+          background: "rgba( 255, 255, 255, 0.58 )",
+          boxShadow: "0 8px 32px 0rgba( 31, 38, 135, 0.37 )",
+          backdropFilter: "blur( 4.5px )",
+          "-webkit-backdrop-filter": " blur( 4.5px )",
+          borderRadius: "10px",
+          border: "1px solid rgba( 255, 255, 255, 0.18 )",
         }}
       >
         <Pie
@@ -68,11 +69,11 @@ const HomeAdmin = () => {
                   users.filter((u) => u.deleted).length,
                 ],
                 backgroundColor: [
-                  "rgba(255, 99, 132, 0.2)",
-                  "rgba(54, 162, 235, 0.2)",
-                  "rgba(255, 206, 86, 0.2)",
-                  "rgba(75, 192, 192, 0.2)",
-                  "rgba(255, 0, 0, 0.2)",
+                  "rgba(255, 99, 133, 0.75)",
+                  "rgba(54, 162, 235, 0.75)",
+                  "rgba(255, 206, 86, 0.75)",
+                  "rgba(75, 192, 192, 0.75)",
+                  "rgba(255, 0, 0, 0.75)",
                 ],
                 borderColor: [
                   "rgba(255, 99, 132, 1)",
@@ -95,11 +96,12 @@ const HomeAdmin = () => {
         justifyContent={"center"}
         alignItems={"center"}
         style={{
-          height: "450px",
-          width: "25%",
-          position: "relative",
-          background: "rgba(112,112,112,0.1)",
-          borderRadius: "15px",
+          background: "rgba( 255, 255, 255, 0.58 )",
+          boxShadow: "0 8px 32px 0rgba( 31, 38, 135, 0.37 )",
+          backdropFilter: "blur( 4.5px )",
+          "-webkit-backdrop-filter": " blur( 4.5px )",
+          borderRadius: "10px",
+          border: "1px solid rgba( 255, 255, 255, 0.18 )",
         }}
       >
         <Pie
@@ -117,11 +119,11 @@ const HomeAdmin = () => {
                   interventions.filter((i) => i.deleted).length,
                 ],
                 backgroundColor: [
-                  "rgba(85, 0, 255, 0.2)",
-                  "rgba(0, 255, 60, 0.2)",
-                  "rgba(255, 206, 86, 0.2)",
-                  "rgba(75, 192, 192, 0.2)",
-                  "rgba(255,0,0, 0.2)",
+                  "rgba(85, 0, 255, 0.75)",
+                  "rgba(0, 255, 60, 0.75)",
+                  "rgba(255, 206, 86, 0.75)",
+                  "rgba(75, 192, 192, 0.75)",
+                  "rgba(255,0,0, 0.75)",
                 ],
                 borderColor: [
                   "rgb(85, 0, 255)",

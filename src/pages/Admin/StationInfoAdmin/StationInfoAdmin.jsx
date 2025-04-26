@@ -142,7 +142,17 @@ const StationInfoAdmin = () => {
     <div>
       {stationInfo ? (
         <Stack spacing={2}>
-          <div>
+          <div
+            style={{
+              background: "rgba( 255, 255, 255, 0.58 )",
+              boxShadow: "0 8px 32px 0rgba( 31, 38, 135, 0.37 )",
+              backdropFilter: "blur( 4.5px )",
+              "-webkit-backdrop-filter": " blur( 4.5px )",
+              borderRadius: "10px",
+              border: "1px solid rgba( 255, 255, 255, 0.18 )",
+              padding: "15px",
+            }}
+          >
             {stationInfo.deleted && (
               <Stack direction={"row"} alignItems={"center"} height={"100px"}>
                 <DeleteForeverIcon style={{ fontSize: "52px" }} color="error" />
@@ -196,7 +206,7 @@ const StationInfoAdmin = () => {
                   style={{
                     marginLeft: "20px",
                     fontWeight: "bold",
-                    color: "#f281ff",
+                    color: "#fffc81",
                   }}
                 >
                   <EmailIcon color="error" /> Email :{stationInfo.gerant.email}

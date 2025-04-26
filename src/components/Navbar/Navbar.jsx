@@ -26,15 +26,17 @@ const Navbar = () => {
   return (
     <Stack
       height={"75px"}
-      width={"100vw"}
+      width={"calc ( 100vw - 100px )"}
       bgcolor={"#ffd001"}
       direction={"row"}
       alignItems={"center"}
       px={"30px"}
       justifyContent={"space-between"}
+      margin={"0 50px 50px 50px"}
+      borderRadius={"15px"}
     >
       <a href="/">
-        <img src={logo} alt="" height={"65px"} width={"auto"} />
+        <img src={logo} alt="" height={"70px"} width={"auto"} />
       </a>
       <Stack direction={"row"} alignItems={"center"} spacing={2}>
         <Typography style={{ textTransform: "capitalize" }}>
