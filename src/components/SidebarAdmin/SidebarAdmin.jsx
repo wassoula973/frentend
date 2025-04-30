@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   ListItemButton,
+  Stack,
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
@@ -15,15 +16,17 @@ import GroupIcon from "@mui/icons-material/Group";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import { useNavigate } from "react-router";
-
+import { useLocation, useNavigate } from "react-router";
+import MenuIcon from "@mui/icons-material/Menu";
 const SidebarAdmin = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
+  console.log(location);
 
   const DrawerList = (
     <Box
@@ -32,7 +35,12 @@ const SidebarAdmin = () => {
       onClick={toggleDrawer(false)}
     >
       <List>
-        <ListItem disablePadding>
+        <ListItem
+          disablePadding
+          style={{
+            background: location.pathname == "/" ? "#efa358d9" : "",
+          }}
+        >
           <ListItemButton
             onClick={() => {
               navigate("/");
@@ -45,7 +53,12 @@ const SidebarAdmin = () => {
           </ListItemButton>
         </ListItem>
         <Divider />
-        <ListItem disablePadding>
+        <ListItem
+          disablePadding
+          style={{
+            background: location.pathname == "/users" ? "#efa358d9" : "",
+          }}
+        >
           <ListItemButton
             onClick={() => {
               navigate("/users");
@@ -58,7 +71,12 @@ const SidebarAdmin = () => {
           </ListItemButton>
         </ListItem>
         <Divider />
-        <ListItem disablePadding>
+        <ListItem
+          disablePadding
+          style={{
+            background: location.pathname == "/stations" ? "#efa358d9" : "",
+          }}
+        >
           <ListItemButton
             onClick={() => {
               navigate("/stations");
@@ -71,7 +89,13 @@ const SidebarAdmin = () => {
           </ListItemButton>
         </ListItem>
         <Divider />
-        <ListItem disablePadding>
+        <ListItem
+          disablePadding
+          style={{
+            background:
+              location.pathname == "/interventions" ? "#efa358d9" : "",
+          }}
+        >
           <ListItemButton
             onClick={() => {
               navigate("/interventions");
@@ -91,7 +115,10 @@ const SidebarAdmin = () => {
     <div>
       {open == false && (
         <Button className="btn-menu" onClick={toggleDrawer(true)}>
-          <Typography>{"Menu >>"}</Typography>
+          <Stack direction={"row"} alignItems={"center"} spacing={1}>
+            <MenuIcon />
+            <Typography>{"Menu >>"}</Typography>
+          </Stack>
         </Button>
       )}
       <Drawer open={open} onClose={toggleDrawer(false)}>

@@ -21,6 +21,7 @@ import ListIntervention from "./pages/Admin/ListIntervention/ListIntervention";
 import InterventionInfoAdmin from "./pages/Admin/InterventionInfoAdmin/InterventionInfoAdmin";
 import Profil from "./pages/Profil/Profil";
 import EditProfil from "./pages/EditProfil/EditProfil";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const { user } = useSelector((state) => state);
@@ -35,71 +36,77 @@ function App() {
       ) : (
         <>
           <Navbar />
-          {user.role == "admin" ? (
-            <>
-              <SidebarAdmin />
+          <div style={{ minHeight: "80vh" }}>
+            {user.role == "admin" ? (
+              <>
+                <SidebarAdmin />
+                <Routes>
+                  <Route path="/" element={<HomeAdmin />} />
+                  <Route path="/users" element={<ListUsers />} />
+                  <Route path="/user/:id" element={<UserInfo />} />
+                  <Route path="/stations" element={<ListStation />} />
+                  <Route path="/station/:id" element={<StationInfoAdmin />} />
+                  <Route path="/interventions" element={<ListIntervention />} />
+                  <Route path="/profil" element={<Profil />} />
+                  <Route path="/edit_profil" element={<EditProfil />} />
+                  <Route
+                    path="/intervention/:id"
+                    element={<InterventionInfoAdmin />}
+                  />
+                  <Route path="/add_user" element={<Register />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </>
+            ) : user.role == "gerant" ? (
               <Routes>
-                <Route path="/" element={<HomeAdmin />} />
-                <Route path="/users" element={<ListUsers />} />
-                <Route path="/user/:id" element={<UserInfo />} />
-                <Route path="/stations" element={<ListStation />} />
+                <Route path="/" element={<HomeGerant />} />
+                <Route path="/add_request" element={<AddRequest />} />
+                <Route path="/requests" element={<ListRequests />} />
+                <Route path="/request/:id" element={<RequestInfo />} />
+                <Route path="/station" element={<StationInfo />} />
                 <Route path="/station/:id" element={<StationInfoAdmin />} />
-                <Route path="/interventions" element={<ListIntervention />} />
-                <Route path="/profil" element={<Profil />} />
-                <Route path="/edit_profil" element={<EditProfil />} />
                 <Route
                   path="/intervention/:id"
                   element={<InterventionInfoAdmin />}
                 />
-                <Route path="/add_user" element={<Register />} />
+                <Route path="/profil" element={<Profil />} />
+                <Route path="/edit_profil" element={<EditProfil />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </>
-          ) : user.role == "gerant" ? (
-            <Routes>
-              <Route path="/" element={<HomeGerant />} />
-              <Route path="/add_request" element={<AddRequest />} />
-              <Route path="/requests" element={<ListRequests />} />
-              <Route path="/request/:id" element={<RequestInfo />} />
-              <Route path="/station" element={<StationInfo />} />
-              <Route path="/station/:id" element={<StationInfoAdmin />} />
-              <Route
-                path="/intervention/:id"
-                element={<InterventionInfoAdmin />}
-              />
-              <Route path="/profil" element={<Profil />} />
-              <Route path="/edit_profil" element={<EditProfil />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          ) : user.role == "technicien" ? (
-            <Routes>
-              <Route path="/" element={<ListRequests />} />
-              <Route
-                path="/intervention/:id"
-                element={<InterventionInfoAdmin />}
-              />
-              <Route path="/profil" element={<Profil />} />
-              <Route path="/edit_profil" element={<EditProfil />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          ) : user.role == "assistant" ? (
-            <Routes>
-              <Route path="/" element={<HomeAssistant />} />
-              <Route path="/station/:id" element={<StationInfoAdmin />} />{" "}
-              <Route path="/user/:id" element={<UserInfo />} />
-              <Route
-                path="/intervention/:id"
-                element={<InterventionInfoAdmin />}
-              />
-              <Route path="/profil" element={<Profil />} />
-              <Route path="/edit_profil" element={<EditProfil />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          ) : (
-            <Routes>
-              <Route path="*" element={<Unauthorized />} />
-            </Routes>
-          )}
+            ) : user.role == "technicien" ? (
+              <Routes>
+                <Route path="/" element={<ListRequests />} />
+                <Route
+                  path="/intervention/:id"
+                  element={<InterventionInfoAdmin />}
+                />
+                <Route path="/profil" element={<Profil />} />
+                <Route path="/edit_profil" element={<EditProfil />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            ) : user.role == "assistant" ? (
+              <Routes>
+                <Route path="/" element={<HomeAssistant />} />
+                <Route
+                  path="/station/:id"
+                  element={<StationInfoAdmin />}
+                />{" "}
+                <Route path="/user/:id" element={<UserInfo />} />
+                <Route
+                  path="/intervention/:id"
+                  element={<InterventionInfoAdmin />}
+                />
+                <Route path="/profil" element={<Profil />} />
+                <Route path="/edit_profil" element={<EditProfil />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            ) : (
+              <Routes>
+                <Route path="*" element={<Unauthorized />} />
+              </Routes>
+            )}
+          </div>
+          <Footer />
         </>
       )}
     </>

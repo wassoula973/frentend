@@ -11,7 +11,7 @@ const NotFound = () => {
         src={imgNotFound}
         height={"100%"}
         width={"100%"}
-        style={{ position: "absolute" }}
+        style={{ position: "absolute", top: 0 }}
       />
       <Button
         style={{
