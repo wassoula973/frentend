@@ -79,10 +79,9 @@ const AddRequest = () => {
   return (
     <Stack
       style={{
-        background: "#eceff4",
-        minHeight: "100%",
+        //background: "#eceff4",
+        minHeight: "80vh",
         width: "100vw",
-        position: "fixed",
       }}
       alignItems={"center"}
     >
