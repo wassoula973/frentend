@@ -311,7 +311,7 @@ const ListStation = () => {
 
   return (
     <div>
-      <Paper sx={{ height: "auto", width: "100%" }}>
+      <Paper sx={{ height: "auto", width: "100%", background: "#ffffff94" }}>
         <Box sx={{ display: "flex", alignItems: "flex-end", margin: "25px" }}>
           <SearchIcon sx={{ color: "action.active", mr: 1, my: 0.5 }} />
           <TextField
