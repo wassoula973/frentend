@@ -78,139 +78,152 @@ const AddRequest = () => {
 
   return (
     <Stack
-      style={{
-        //background: "#eceff4",
-        minHeight: "80vh",
-        width: "100vw",
-      }}
+      style={{ width: "98vw", height: "500px" }}
       alignItems={"center"}
+      justifyContent={"center"}
     >
-      <Stack bgcolor={"#ffd001"} py="15px" borderRadius={"15px"} width={"30vw"}>
-        <img
-          src={agilLogo}
-          height={"125px"}
-          width={"125px"}
-          style={{ alignSelf: "center" }}
-        />
-      </Stack>
-      {user.station ? (
-        <form onSubmit={handleSubmit(addRequestAction)}>
-          <Stack spacing={2} mt={"15px"} width={"30vw"}>
-            <Controller
-              control={control}
-              name="category"
-              render={({ field: { value, onChange } }) => (
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Category
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={value}
-                    label="Probleme"
-                    onChange={onChange}
-                  >
-                    <MenuItem value={"fuite_citerne"}>
-                      fuite au niveau de citerne
-                    </MenuItem>
-                    <MenuItem value={"piste"}>Problème de piste</MenuItem>
-                    <MenuItem value={"extincteur"}>Extincteur</MenuItem>
-                    <MenuItem value={"lavage"}>Sale de lavage</MenuItem>
-                    <MenuItem value={"retard"}>Retard de livraison</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            />
-
-            <Controller
-              control={control}
-              name="intensity"
-              render={({ field: { value, onChange } }) => (
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">
-                    Intensity
-                  </InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={value}
-                    label="Age"
-                    onChange={onChange}
-                  >
-                    <MenuItem value={"danger"}>Danger</MenuItem>
-                    <MenuItem value={"warning"}>Warning</MenuItem>
-                    <MenuItem value={"normal"}>Normal</MenuItem>
-                  </Select>
-                </FormControl>
-              )}
-            />
-
-            {user.station &&
-              user.station.listmateriel &&
-              user.station.listmateriel.length > 1 && (
-                <Controller
-                  control={control}
-                  name="material"
-                  render={({ field: { value, onChange } }) => (
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-simple-select-label">
-                        Material
-                      </InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={value}
-                        label="Material"
-                        onChange={onChange}
-                      >
-                        {user.station.listmateriel
-                          .filter((m) => {
-                            return m.etat != "en panne";
-                          })
-                          .map((m) => {
-                            return <MenuItem value={m.id}>{m.type}</MenuItem>;
-                          })}
-                      </Select>
-                    </FormControl>
-                  )}
-                />
-              )}
-
-            <Controller
-              control={control}
-              name="error"
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  required
-                  label="Type the Error"
-                  value={value}
-                  onChange={onChange}
-                  multiline
-                />
-              )}
-            />
-
-            <Button
-              component="label"
-              role={undefined}
-              variant="contained"
-              tabIndex={-1}
-              startIcon={<CloudUploadIcon />}
-            >
-              Upload files
-              <VisuallyHiddenInput
-                type="file"
-                onChange={(event) => setImage(event.target.files[0])}
+      <Stack
+        borderRadius={"15px"}
+        style={{
+          background: "#eceff4cf",
+          minHeight: "80vh",
+          width: "40vw",
+        }}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
+        <Stack
+          bgcolor={"#ffd001"}
+          py="15px"
+          borderRadius={"15px"}
+          width={"30vw"}
+        >
+          <img
+            src={agilLogo}
+            height={"125px"}
+            width={"125px"}
+            style={{ alignSelf: "center" }}
+          />
+        </Stack>
+        {user.station ? (
+          <form onSubmit={handleSubmit(addRequestAction)}>
+            <Stack spacing={2} mt={"15px"} width={"30vw"}>
+              <Controller
+                control={control}
+                name="category"
+                render={({ field: { value, onChange } }) => (
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Category
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={value}
+                      label="Probleme"
+                      onChange={onChange}
+                    >
+                      <MenuItem value={"fuite_citerne"}>
+                        fuite au niveau de citerne
+                      </MenuItem>
+                      <MenuItem value={"piste"}>Problème de piste</MenuItem>
+                      <MenuItem value={"extincteur"}>Extincteur</MenuItem>
+                      <MenuItem value={"lavage"}>Sale de lavage</MenuItem>
+                      <MenuItem value={"retard"}>Retard de livraison</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
               />
-            </Button>
 
-            <Button type="submit">Send</Button>
-          </Stack>
-        </form>
-      ) : (
-        "You must be assigned to a Station"
-      )}
+              <Controller
+                control={control}
+                name="intensity"
+                render={({ field: { value, onChange } }) => (
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Intensity
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={value}
+                      label="Age"
+                      onChange={onChange}
+                    >
+                      <MenuItem value={"danger"}>Danger</MenuItem>
+                      <MenuItem value={"warning"}>Warning</MenuItem>
+                      <MenuItem value={"normal"}>Normal</MenuItem>
+                    </Select>
+                  </FormControl>
+                )}
+              />
+
+              {user.station &&
+                user.station.listmateriel &&
+                user.station.listmateriel.length > 1 && (
+                  <Controller
+                    control={control}
+                    name="material"
+                    render={({ field: { value, onChange } }) => (
+                      <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">
+                          Material
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={value}
+                          label="Material"
+                          onChange={onChange}
+                        >
+                          {user.station.listmateriel
+                            .filter((m) => {
+                              return m.etat != "en panne";
+                            })
+                            .map((m) => {
+                              return <MenuItem value={m.id}>{m.type}</MenuItem>;
+                            })}
+                        </Select>
+                      </FormControl>
+                    )}
+                  />
+                )}
+
+              <Controller
+                control={control}
+                name="error"
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    required
+                    label="Type the Error"
+                    value={value}
+                    onChange={onChange}
+                    multiline
+                  />
+                )}
+              />
+
+              <Button
+                component="label"
+                role={undefined}
+                variant="contained"
+                tabIndex={-1}
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload files
+                <VisuallyHiddenInput
+                  type="file"
+                  onChange={(event) => setImage(event.target.files[0])}
+                />
+              </Button>
+
+              <Button type="submit">Send</Button>
+            </Stack>
+          </form>
+        ) : (
+          "You must be assigned to a Station"
+        )}
+      </Stack>
     </Stack>
   );
 };

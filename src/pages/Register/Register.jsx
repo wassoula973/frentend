@@ -61,10 +61,9 @@ const Register = () => {
   };
 
   return (
-    <Stack style={{ height: "100vh", width: "100vw" }} alignItems={"center"}>
+    <Stack alignItems={"center"} mb={"100px"}>
       <Stack
         style={{
-          height: "100vh",
           width: "30vw",
           background: "#fff",
           borderRadius: "15px",
