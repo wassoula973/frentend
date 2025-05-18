@@ -54,7 +54,7 @@ const StationInfo = () => {
       renderCell: (cell) => {
         return (
           <Stack justifyContent={"center"} height={"100%"}>
-            {cell.row.etat == "bien" ? (
+            {cell.row.etat == "good" ? (
               <CheckCircleIcon color="success" />
             ) : (
               <ReportIcon color="warning" />
