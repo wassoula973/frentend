@@ -1,4 +1,6 @@
 import {
+  Autocomplete,
+  Box,
   Button,
   FormControl,
   InputLabel,
@@ -7,6 +9,7 @@ import {
   OutlinedInput,
   Select,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import axios from "axios";
@@ -356,9 +359,11 @@ const UserInfo = () => {
           alignItems={"center"}
           spacing={2}
         >
-          <FormControl sx={{ m: 1, width: 300 }}>
-            <InputLabel id="demo-multiple-name-label">Name</InputLabel>
-            <Select
+          {/* <Select
+              MenuProps={{
+                disableScrollLock: false,
+              }}
+              style={{ height: "150px" }}
               labelId="demo-multiple-name-label"
               id="demo-multiple-name"
               multiple
@@ -371,8 +376,26 @@ const UserInfo = () => {
                   {name}
                 </MenuItem>
               ))}
-            </Select>
-          </FormControl>
+            </Select> */}
+          <Autocomplete
+            multiple
+            options={list.sort()}
+            sx={{ width: 300 }}
+            onChange={(event, newValue) => {
+              setGouvernorats(newValue);
+            }}
+            defaultValue={gouvernorats}
+            autoHighlight
+            getOptionLabel={(option) => option}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props;
+              return <Box {...optionProps}>{option}</Box>;
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Gouvernorats" />
+            )}
+          />
+
           <Button
             onClick={() => {
               chageGouvernorats();
