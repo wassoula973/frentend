@@ -56,6 +56,8 @@ const ListRequests = () => {
   };
 
   const editIntervention = () => {
+    console.log(selectedIntervention._id);
+
     axios
       .put(
         import.meta.env.VITE_BACKEND_URL +
@@ -230,7 +232,6 @@ const ListRequests = () => {
                     e.stopPropagation();
                     setOpen(true);
                     setSelectedIntervention(cell.row);
-
                     setIntensity(cell.row.intensity);
                     setCategory(cell.row.category);
                     setInputTechnicien(cell.row.technicien);
@@ -491,15 +492,11 @@ const ListRequests = () => {
               id="demo-simple-select"
               label="Age"
             >
-              <MenuItem value={"dga"}>D G A</MenuItem>
-              <MenuItem value={"comptabilité"}>Compta</MenuItem>
-              <MenuItem value={"commerciale gaz"}>Gaz</MenuItem>
-              <MenuItem value={"exploitation"}>Exploitation</MenuItem>
-              <MenuItem value={"financiere"}>Financiere</MenuItem>
-              <MenuItem value={"maitenance"}>Maitenance</MenuItem>
-              <MenuItem value={"marketing"}>Marketing</MenuItem>
-              <MenuItem value={"securite"}>Securite</MenuItem>
-              <MenuItem value={"commerciale des reseaux"}>Reseau</MenuItem>
+              <MenuItem value={"fuite_citerne"}>Fuite dans la citerne</MenuItem>
+              <MenuItem value={"piste"}>Piste</MenuItem>
+              <MenuItem value={"extincteur"}>Extincteur</MenuItem>
+              <MenuItem value={"lavage"}>Lavage</MenuItem>
+              <MenuItem value={"retard"}>Retard</MenuItem>
             </Select>
           </FormControl>
           <Autocomplete
