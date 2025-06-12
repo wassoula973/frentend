@@ -32,7 +32,7 @@ const ListUsers = () => {
   const [role, setRole] = useState("");
 
   const [open, setOpen] = useState(false);
-
+  // Gestion du changement de rôle dans le select
   const handleChange = (event) => {
     const {
       target: { value },
@@ -64,6 +64,7 @@ const ListUsers = () => {
             alignItems={"center"}
             height={"100%"}
           >
+            {/* Bouton pour voir les détails de l'utilisateur */}
             <Button
               variant="contained"
               onClick={(e) => {
@@ -73,6 +74,7 @@ const ListUsers = () => {
             >
               <RemoveRedEyeIcon />
             </Button>
+            {/* Bouton Restore ou boutons d'action selon si l'utilisateur est supprimé */}
             {cell.row.deleted ? (
               <Button
                 className="btn-not-dashed"
@@ -87,17 +89,6 @@ const ListUsers = () => {
               </Button>
             ) : (
               <>
-                {/* <Button
-                  color="warning"
-                  variant="contained"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setOpen(true);
-                    setSelectedUser(cell.row);
-                  }}
-                >
-                  Change Role
-                </Button> */}
                 <Button
                   color="error"
                   variant="contained"
@@ -280,6 +271,7 @@ const ListUsers = () => {
           }}
           rows={users
             .filter((u) => {
+              // Filtrage des utilisateurs selon la recherche
               return (
                 u.firstname.toLowerCase().includes(search.toLowerCase()) ||
                 u.lastname.toLowerCase().includes(search.toLowerCase()) ||
@@ -302,52 +294,6 @@ const ListUsers = () => {
           sx={{ border: 0, height: "auto" }}
         />
       </Paper>
-      <Modal
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Stack
-          style={{
-            height: "300px",
-            width: "350px",
-            background: "white",
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-          }}
-          justifyContent={"center"}
-          alignItems={"center"}
-          spacing={2}
-        >
-          <FormControl sx={{ m: 1, width: 300 }}>
-            <InputLabel id="demo-multiple-name-label">Role</InputLabel>
-            <Select
-              labelId="demo-multiple-name-label"
-              id="demo-multiple-name"
-              value={role}
-              onChange={handleChange}
-              input={<OutlinedInput label="Role" />}
-            >
-              <MenuItem value={"technicien"}>Technicien</MenuItem>
-              <MenuItem value={"gerant"}>Gerant</MenuItem>
-              <MenuItem value={"assistant"}>Assistant</MenuItem>
-              <MenuItem value={"admin"}>Admin</MenuItem>
-            </Select>
-          </FormControl>
-          <Button
-            onClick={() => {
-              changeRole();
-            }}
-          >
-            Confirm
-          </Button>
-        </Stack>
-      </Modal>
     </div>
   );
 };

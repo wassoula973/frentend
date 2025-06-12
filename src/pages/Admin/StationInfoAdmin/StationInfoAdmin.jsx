@@ -5,6 +5,7 @@ import {
   MenuItem,
   Modal,
   OutlinedInput,
+  Paper,
   Select,
   Stack,
   Typography,
@@ -266,14 +267,18 @@ const StationInfoAdmin = () => {
           <Typography textAlign={"center"} fontSize={"20px"} fontWeight={900}>
             List of Materials
           </Typography>
-          <DataGrid
-            initialState={{ pagination: { paginationModel } }}
-            pageSizeOptions={[5, 10, 25]}
-            checkboxSelection
-            sx={{ border: 0, height: "auto" }}
-            columns={columns}
-            rows={stationInfo.listmateriel}
-          />
+          <Paper
+            sx={{ height: "auto", width: "100%", background: "#ffffff94" }}
+          >
+            <DataGrid
+              initialState={{ pagination: { paginationModel } }}
+              pageSizeOptions={[5, 10, 25]}
+              checkboxSelection
+              sx={{ border: 0, height: "auto" }}
+              columns={columns}
+              rows={stationInfo.listmateriel}
+            />
+          </Paper>
         </Stack>
       ) : (
         <p>Loading ...</p>

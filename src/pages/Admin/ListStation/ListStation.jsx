@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   FormControl,
@@ -194,6 +195,7 @@ const ListStation = () => {
               }}
             >
               <RemoveRedEyeIcon />
+              {/* Bouton d'édition si la station n'est pas supprimée */}
             </Button>
 
             {cell.row.deleted == false && (
@@ -210,7 +212,7 @@ const ListStation = () => {
                 Edit Gerant
               </Button>
             )}
-
+            {/* Bouton de suppression/restauration */}
             {cell.row.deleted == false ? (
               <Button
                 variant="contained"
@@ -278,7 +280,7 @@ const ListStation = () => {
         console.log(error);
       });
   };
-
+  // Ajout d'une nouvelle station
   const addStation = () => {
     axios
       .post(
@@ -370,7 +372,7 @@ const ListStation = () => {
             Restore Checked Rows
           </Button>
         )}
-
+        {/* Tableau des stations */}
         <DataGrid
           onRowSelectionModelChange={(rows) => {
             setSelectedStations(rows);
@@ -402,7 +404,7 @@ const ListStation = () => {
           sx={{ border: 0, height: "auto" }}
         />
       </Paper>
-
+      {/* Modal d'édition de gérant */}
       <Modal
         style={{
           height: "100vh",
@@ -440,13 +442,15 @@ const ListStation = () => {
               onChange={handleChange}
               input={<OutlinedInput label="List Gerants" />}
             >
-              {gerants.map((g) => {
-                return (
-                  <MenuItem value={g._id}>
-                    {g.firstname + " " + g.lastname}
-                  </MenuItem>
-                );
-              })}
+              {gerants
+                .filter((g) => g.station == null)
+                .map((g) => {
+                  return (
+                    <MenuItem value={g._id}>
+                      {g.firstname + " " + g.lastname}
+                    </MenuItem>
+                  );
+                })}
             </Select>
           </FormControl>
           <Button
@@ -458,7 +462,7 @@ const ListStation = () => {
           </Button>
         </Stack>
       </Modal>
-
+      {/* Modal d'ajout de station */}
       <Modal
         open={openAdd}
         onClose={() => {
@@ -489,22 +493,23 @@ const ListStation = () => {
             value={adresse}
             onChange={(e) => setAdresse(e.target.value)}
           />
-          <Select
-            required
-            label="Gouvernorat"
-            sx={{ m: 1, width: 300 }}
-            labelId="demo-multiple-name-label"
-            id="demo-multiple-name"
-            value={gouvernorat}
-            onChange={handleChangeGouvernorat}
-            input={<OutlinedInput label="Name" />}
-          >
-            {list.sort().map((name) => (
-              <MenuItem key={name} value={name}>
-                {name}
-              </MenuItem>
-            ))}
-          </Select>
+          <Autocomplete
+            options={list.sort()}
+            sx={{ width: 300 }}
+            onChange={(event, newValue) => {
+              setGouvernorat(newValue);
+            }}
+            autoHighlight
+            getOptionLabel={(option) => option}
+            renderOption={(props, option) => {
+              const { key, ...optionProps } = props;
+              return <Box {...optionProps}>{option}</Box>;
+            }}
+            renderInput={(params) => (
+              <TextField {...params} label="Gouvernorat" />
+            )}
+          />
+
           <FormControl sx={{ m: 1, width: 300 }}>
             <InputLabel id="demo-multiple-name-label">Gerant</InputLabel>
             <Select
@@ -514,13 +519,15 @@ const ListStation = () => {
               onChange={handleChange}
               input={<OutlinedInput label="List Gerants" />}
             >
-              {gerants.map((g) => {
-                return (
-                  <MenuItem value={g._id}>
-                    {g.firstname + " " + g.lastname}
-                  </MenuItem>
-                );
-              })}
+              {gerants
+                .filter((g) => g.station == null)
+                .map((g) => {
+                  return (
+                    <MenuItem value={g._id}>
+                      {g.firstname + " " + g.lastname}
+                    </MenuItem>
+                  );
+                })}
             </Select>
           </FormControl>
           <Button

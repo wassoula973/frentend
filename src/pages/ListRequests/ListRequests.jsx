@@ -55,6 +55,29 @@ const ListRequests = () => {
       });
   };
 
+  const cancelMultiple = () => {
+    axios
+      .patch(
+        import.meta.env.VITE_BACKEND_URL + "admin/interventions/multipleCancel",
+        { listId: selectedInterventions },
+        {
+          headers: { Authorization: "Bearer " + token },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        getInterventions();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const editIntervention = () => {
     console.log(selectedIntervention._id);
 
@@ -275,8 +298,7 @@ const ListRequests = () => {
                 </Button>
               </>
             ) : user.role == "gerant" &&
-              cell.row.etat !== "done" &&
-              cell.row.etat !== "canceled" &&
+              cell.row.etat == "pending" &&
               cell.row.deleted == false ? (
               <Button
                 color="error"
@@ -286,7 +308,7 @@ const ListRequests = () => {
                   cancelIntervention(cell.row._id);
                 }}
               >
-                Canceled
+                Cancel
               </Button>
             ) : (
               user.role == "technicien" &&
@@ -398,7 +420,7 @@ const ListRequests = () => {
                 confirmButtonText: "Yes, delete it!",
               }).then((result) => {
                 if (result.isConfirmed) {
-                  deleteMultiple();
+                  user.role == "gerant" ? cancelMultiple() : deleteMultiple();
                 }
               });
             }}
@@ -406,7 +428,7 @@ const ListRequests = () => {
             color="error"
             variant="contained"
           >
-            Delete Checked Rows
+            Cancel Checked Rows
           </Button>
         )}
 

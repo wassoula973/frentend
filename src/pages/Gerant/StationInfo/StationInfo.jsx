@@ -46,8 +46,8 @@ const StationInfo = () => {
   };
 
   const columns = [
-    { field: "id" },
-    { field: "type" },
+    { field: "id", flex: 1 },
+    { field: "type", flex: 1 },
     {
       field: "etat",
       headerName: "State",
@@ -66,6 +66,7 @@ const StationInfo = () => {
     },
     {
       field: "actions",
+      flex: 0.6,
       headerName: "Actions",
       renderCell: (cell) => {
         return (

@@ -1,3 +1,4 @@
+// Import des composants Material-UI pour l'interface
 import {
   Box,
   Button,
@@ -16,12 +17,17 @@ import GroupIcon from "@mui/icons-material/Group";
 import LocalGasStationIcon from "@mui/icons-material/LocalGasStation";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+// Import des hooks de React Router pour la navigation
 import { useLocation, useNavigate } from "react-router";
 import MenuIcon from "@mui/icons-material/Menu";
 const SidebarAdmin = () => {
+  // State pour gérer l'ouverture/fermeture du drawer (sidebar)
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  // Hook pour connaître la route actuelle
   const location = useLocation();
+  // Ferme le drawer quand on clique à l'intérieur // Supprime le padding par défaut
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -36,7 +42,7 @@ const SidebarAdmin = () => {
     >
       <List>
         <ListItem
-          disablePadding
+          disablePadding // Supprime le padding par défaut
           style={{
             background: location.pathname == "/" ? "#efa358d9" : "",
           }}
@@ -52,7 +58,8 @@ const SidebarAdmin = () => {
             <ListItemText primary={"Dashboard"} />
           </ListItemButton>
         </ListItem>
-        <Divider />
+        <Divider /> {/* Ligne de séparation */}
+        {/* Item 2: Manage users */}
         <ListItem
           disablePadding
           style={{
@@ -71,6 +78,7 @@ const SidebarAdmin = () => {
           </ListItemButton>
         </ListItem>
         <Divider />
+        {/* Item 3: Manage stations */}
         <ListItem
           disablePadding
           style={{
@@ -88,6 +96,7 @@ const SidebarAdmin = () => {
             <ListItemText primary={"Manage Stations"} />
           </ListItemButton>
         </ListItem>
+        {/* Item 4: manage interventions */}
         <Divider />
         <ListItem
           disablePadding
@@ -121,6 +130,7 @@ const SidebarAdmin = () => {
           </Stack>
         </Button>
       )}
+      {/* Drawer (sidebar) qui s'ouvre depuis la gauche */}
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>

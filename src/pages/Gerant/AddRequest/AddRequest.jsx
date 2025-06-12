@@ -41,6 +41,7 @@ const AddRequest = () => {
 
   const addRequestAction = (data) => {
     const formdata = new FormData(); // ki tabda bch tab3eth request feha fichier
+    // Ajout des données au FormData
     formdata.append("gerant", user._id);
     formdata.append("station", user.station._id);
     formdata.append("error", data.error);
@@ -60,7 +61,7 @@ const AddRequest = () => {
             token: response.data.token,
             stayConnected: true,
           })
-        );
+        ); // Notification de succès
         Swal.fire({
           position: "top-end",
           icon: "success",
@@ -98,6 +99,7 @@ const AddRequest = () => {
           borderRadius={"15px"}
           width={"30vw"}
         >
+          {/* En-tête avec logo */}
           <img
             src={agilLogo}
             height={"125px"}
@@ -105,6 +107,8 @@ const AddRequest = () => {
             style={{ alignSelf: "center" }}
           />
         </Stack>
+        {/* Vérification que l'utilisateur est assigné à une station */}
+
         {user.station ? (
           <form onSubmit={handleSubmit(addRequestAction)}>
             <Stack spacing={2} mt={"15px"} width={"30vw"}>
@@ -134,7 +138,7 @@ const AddRequest = () => {
                   </FormControl>
                 )}
               />
-
+              {/* Sélection de l'intensité */}
               <Controller
                 control={control}
                 name="intensity"
@@ -157,10 +161,10 @@ const AddRequest = () => {
                   </FormControl>
                 )}
               />
-
+              {/* Sélection du matériel (si disponible) */}
               {user.station &&
                 user.station.listmateriel &&
-                user.station.listmateriel.length > 1 && (
+                user.station.listmateriel.length > 0 && (
                   <Controller
                     control={control}
                     name="material"
@@ -189,6 +193,7 @@ const AddRequest = () => {
                   />
                 )}
 
+              {/* Description de l'erreur */}
               <Controller
                 control={control}
                 name="error"
